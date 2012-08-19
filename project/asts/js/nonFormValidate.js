@@ -11,13 +11,15 @@
         }, settings = $.extend(defaults, options);
 
         var $validate = "validate",
-			$class = '.mValidate',
+			$class = '.nValidate',
             $validateFrame = settings.frame +' '+ $class,
-			$validatePattern = null;
+			$validatePattern = null,
+			$firstValidate = 0;
             
 			
 
         $.nonControl = function () {
+			var ptrn = //;
             $($validateFrame).each(function () {
 				//console.log(this.className);
                 $.nonScan(this, this.className);
@@ -26,18 +28,35 @@
         };
 
         $.nonScan = function ($this, $class) {
-            var $pattern = new RegExp('m\\[(.*)\\]','g'), 
+            var $pattern = new RegExp('v\\[(.*)\\]','g'), 
 				array = $pattern.exec($class);
-			//console.log(array);
             if (array != null) {
                 if (array.length > 0){
-					$($this).addClass($validate);
-					console.log(array[1]);
+					switch (array[1]){
+						case 'email':
+							$firstValidate++;
+							validations.email($this.value) == false ? $.addValidateClass($this) : '';
+						break;
+						case 'required':
+							$firstValidate++;
+							validations.required($this.value) == false ? $.addValidateClass($this) : '';
+						break;
+					}
 				}
             } else {
                 console.log($($this).attr('type'));
             }
         };
+		//console.log(validations.email($this.value));
+						//console.log(array[1]);
+		$.addValidateClass = function($this){
+			$($this).addClass($validate);
+			if($firstValidate == 1){
+				$('html,body').animate({
+					scrollTop: $($this).offset().top - 20
+				}, 1000);
+			}
+		};
 		
 		$.start = function(){
 			if(!settings.form){
@@ -54,9 +73,12 @@
 		});
 		
 		var validations = {
-			email : function(){
+			required : function(val){
+				return val == '' ? false : true;
+			},
+			email : function(val){
 				pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;  
-	   			return pattern.test(elementValue);
+	   			return pattern.test(val);
 			}	
 		};
 		
