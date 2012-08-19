@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Form VAlidate Example</title>
+<link rel="stylesheet" type="text/css" href="asts/css/style.css">
+<link rel="stylesheet" type="text/css" href="asts/css/nonFormValidate.css">
+<script type="text/javascript" src="asts/js/jQuery1.7.2.js"></script>
+<script type="text/javascript" src="asts/js/nonFormValidate.js"></script>
+<script>
+$(function(){
+	$.fn.nonFormValidate();
+	$('a.firstDivValidate').on('click',function(){
+		$.fn.nonFormValidate({
+			frame:'.firstDiv',
+			form:false
+		});
+		return false;
+	});
+			
+});
+</script>
+</head>
+
+<body>
+<div class="firstDiv">
+  <h1>First Div Validate</h1>
+  <input type="text" class="mValidate m[default]"/>
+  <input type="text" class="mValidate m[default]"/>
+  <input type="text" class="mValidate m[default111]"/>
+  <input type="text" class="mValidate m[default222]"/>
+  <input type="text" class="mValidate m[default111]"/>
+  <a href="#" class="firstDivValidate">click to validate</a>
+</div>
+</body>
+</html>
