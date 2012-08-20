@@ -25,4 +25,5 @@ div{
     padding: 5px;
     width: 400px;
 	position:relative;
+	float:left;
 }

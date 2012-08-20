@@ -36,7 +36,7 @@
 			
         $.nonControl = function () {
 			$firstValidate = 0;
-			$($errorClass).remove();
+			$($dom).children($errorClass).remove();
             $($dom).children($class).each(function () {
                 $.nonScan(this, this.className);
             });
