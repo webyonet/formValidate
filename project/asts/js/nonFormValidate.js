@@ -206,7 +206,6 @@
                 return val != $password ? false : true;
             }
         };
-
         //trigger pluging
         $.start();
     };
