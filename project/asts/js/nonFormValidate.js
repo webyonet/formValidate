@@ -21,7 +21,6 @@
 				phoneTR : 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
 				min : 'En Az {count} Karakter Olmalıdır',
 				max : 'En Fazla {count} Karakter Olmalıdır',
-				
 			}
         }, settings = $.extend(defaults, options);
 
@@ -31,7 +30,8 @@
 			$validatePattern = null,
 			$firstValidate = 0,
 			$errorClass = 'span.error',
-			$minmax = 0;
+			$minmax = 0,
+			$minMaxText = '';
 			
 			
         $.nonControl = function () {
@@ -53,14 +53,16 @@
                 if ($array.length > 0){
 					$multi = $array[1].split(' ');
 					for(i in $multi){
-						$sizePattern = /^[min\[|max\[]+([0-9]+)\]$/g;
+						$sizePattern = new RegExp('^[min\\[|max\\[]+([0-9]+)\\]$','g');
 						$size = $sizePattern.exec($multi[i]);
 						if($size != null){
 							if($size.length > 0){
+								//console.log($size)
 								$minmax = parseInt($size[1]);
 								$multi[i] = $size[0].replace(/[^min|^max]/g,'');
 							}
 						};
+						console.log($minmax);
 						$.nonTrigger($this,$multi[i]);
 					}//for
 				}
@@ -70,6 +72,7 @@
         };
 		
 		$.nonTrigger = function($this,$class){
+			$minMaxText = '';
 			switch ($class){
 				case 'email':
 					validations.email($this.value) == false ? $.addValidateClass($this,settings.errorText.email) : '';
@@ -99,12 +102,12 @@
 					validations.phoneTR($this.value) == false ? $.addValidateClass($this,settings.errorText.phoneTR) : '';
 				break;
 				case 'min':
-					settings.errorText.min = settings.errorText.min.replace(/\{count\}/g,$minmax);
-					validations.min($this.value) == false ? $.addValidateClass($this,settings.errorText.min) : '';
+					$minMaxText = settings.errorText.min.replace(/\{count\}/g,$minmax);
+					validations.min($this.value) == false ? $.addValidateClass($this,$minMaxText) : '';
 				break;
 				case 'max':
-					settings.errorText.max = settings.errorText.max.replace(/\{count\}/g,$minmax);
-					validations.max($this.value) == false ? $.addValidateClass($this,settings.errorText.max) : '';
+					$minMaxText = settings.errorText.max.replace(/\{count\}/g,$minmax);
+					validations.max($this.value) == false ? $.addValidateClass($this,$minMaxText) : '';
 				break;
 			}
 		};
@@ -112,8 +115,10 @@
 		$.addValidateClass = function($this,$text){
 			$firstValidate++;
 			$($this).addClass($validate);
-			if(settings.error)
+			if(settings.error){
+			//console.log($text);
 				$($this).after('<span class="error">'+ $text +'</span>');
+			}
 			if($firstValidate == 1){
 				$('html,body').animate({
 					scrollTop: $($this).offset().top - 20
@@ -177,7 +182,6 @@
 			},
 			min : function(val){
 				return val.length < $minmax || val.length == 0 ? false : true;	
-				console.log($minmax);
 			},
 			max : function(val){
 				return val.length > $minmax || val.length == 0 ? false : true;	
