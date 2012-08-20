@@ -18,8 +18,9 @@
 			$firstValidate = 0,
 			$errorClass = 'span.errorText',
 			$minmax = 0;
-
+			
         $.nonControl = function () {
+			$firstValidate = 0;
 			$($errorClass).remove();
             $($validateFrame).each(function () {
                 $.nonScan(this, this.className);
@@ -36,57 +37,44 @@
                 if ($array.length > 0){
 					$sizePattern = /^min\[|^max\[([0-9])\]$/g;
 					$size = $sizePattern.exec($array[1]);
-					if($size != null)
+					if($size != null){
 						if($size.length > 0){
 							$minmax = parseInt($size[1]);
-							console.log($array[0])
 							$array[1] = $size[0].replace(/[^min|^max]/g,'');
-							console.log($array[1]);
 						}
-					
+					};
 					switch ($array[1]){
 						case 'email':
-							$firstValidate++;
 							validations.email($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'required':
-							$firstValidate++;
 							validations.required($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'number':
-							$firstValidate++;
 							validations.number($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'letter':
-							$firstValidate++;
 							validations.letter($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'letterornumber':
-							$firstValidate++;
 							validations.letterornumber($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'decimal':
-							$firstValidate++;
 							validations.decimal($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'url':
-							$firstValidate++;
 							validations.url($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'dateTR':
-							$firstValidate++;
 							validations.dateTR($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'phoneTR':
-							$firstValidate++;
 							validations.phoneTR($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'min':
-							$firstValidate++;
 							validations.min($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 						case 'max':
-							$firstValidate++;
 							validations.max($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 					}
@@ -95,9 +83,9 @@
                 console.log($($this).attr('type'));
             }
         };
-		//console.log(validations.email($this.value));
-						//console.log($array[1]);
+		
 		$.addValidateClass = function($this){
+			$firstValidate++;
 			$($this).addClass($validate);
 			if(settings.errorText)
 				$.errorTextAdd($this);
