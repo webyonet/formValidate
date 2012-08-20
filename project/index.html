@@ -10,18 +10,16 @@
 <script>
 $(function(){
 	$('div.firstDiv').nonFormValidate({
-		form:false	
+		form:true	
 	});
 	$('a.firstDivValidate').on('click',function(){
 		$('div.firstDiv').nonFormValidate({
-			frame:'.firstDiv',
 			form:false
 		});
 		return false;
 	});
 	$('a.secondDivValidate').on('click',function(){
 		$('div.secondDiv').nonFormValidate({
-			frame:'.firstDiv',
 			form:false
 		});
 		return false;

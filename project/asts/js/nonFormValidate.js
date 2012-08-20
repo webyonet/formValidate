@@ -6,7 +6,6 @@
     $.fn.nonFormValidate = function (options) {
         var defaults = {
             form: false,
-            frame: null,
             error: true,
 			multierrortext : true ,
             errorText: {
@@ -32,8 +31,7 @@
             $errorClass = 'span.error',
             $minmax = 0,
             $minMaxText = '';
-
-
+			
         $.nonControl = function () {
             $firstValidate = 0;
             $($dom).children($errorClass).remove();
@@ -129,7 +127,7 @@
 
         $.start = function () {
             if (!settings.form) {
-                if (settings.frame != null) {
+                if ($dom != null) {
                     $.nonControl();
                 }
             } else {
@@ -187,6 +185,5 @@
 
         //trigger pluging
         $.start();
-        settings.frame = $dom;
     };
 })(jQuery);
