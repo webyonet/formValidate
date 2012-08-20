@@ -31,58 +31,67 @@
             var $pattern = new RegExp('v\\[(.*)\\]','g'), 
 				$array = $pattern.exec($class),
 				$size,
-				$sizePattern;
+				$sizePattern,
+				$multi = [];
 				
             if ($array != null) {
                 if ($array.length > 0){
-					$sizePattern = /^min\[|^max\[([0-9])\]$/g;
-					$size = $sizePattern.exec($array[1]);
-					if($size != null){
-						if($size.length > 0){
-							$minmax = parseInt($size[1]);
-							$array[1] = $size[0].replace(/[^min|^max]/g,'');
-						}
-					};
-					switch ($array[1]){
-						case 'email':
-							validations.email($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'required':
-							validations.required($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'number':
-							validations.number($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'letter':
-							validations.letter($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'letterornumber':
-							validations.letterornumber($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'decimal':
-							validations.decimal($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'url':
-							validations.url($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'dateTR':
-							validations.dateTR($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'phoneTR':
-							validations.phoneTR($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'min':
-							validations.min($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-						case 'max':
-							validations.max($this.value) == false ? $.addValidateClass($this) : '';
-						break;
-					}
+					$multi = $array[1].split(' ');
+					for(i in $multi){
+						$sizePattern = /^min\[|^max\[([0-9])\]$/g;
+						$size = $sizePattern.exec($multi[i]);
+						console.log($size);
+						if($size != null){
+							if($size.length > 0){
+								$minmax = parseInt($size[1]);
+								$multi[i] = $size[0].replace(/[^min|^max]/g,'');
+							}
+						};
+						$.nonTrigger($this,$multi[i]);
+					}//for
 				}
             } else {
                 console.log($($this).attr('type'));
             }
         };
+		
+		$.nonTrigger = function($this,$class){
+			switch ($class){
+				case 'email':
+					validations.email($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'required':
+					validations.required($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'number':
+					validations.number($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'letter':
+					validations.letter($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'letterornumber':
+					validations.letterornumber($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'decimal':
+					validations.decimal($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'url':
+					validations.url($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'dateTR':
+					validations.dateTR($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'phoneTR':
+					validations.phoneTR($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'min':
+					validations.min($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+				case 'max':
+					validations.max($this.value) == false ? $.addValidateClass($this) : '';
+				break;
+			}
+		};
 		
 		$.addValidateClass = function($this){
 			$firstValidate++;
