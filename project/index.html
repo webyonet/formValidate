@@ -9,9 +9,18 @@
 <script type="text/javascript" src="asts/js/nonFormValidate.js"></script>
 <script>
 $(function(){
-	$.fn.nonFormValidate();
+	$('div.firstDiv').nonFormValidate({
+		form:false	
+	});
 	$('a.firstDivValidate').on('click',function(){
-		$.fn.nonFormValidate({
+		$('div.firstDiv').nonFormValidate({
+			frame:'.firstDiv',
+			form:false
+		});
+		return false;
+	});
+	$('a.secondDivValidate').on('click',function(){
+		$('div.secondDiv').nonFormValidate({
 			frame:'.firstDiv',
 			form:false
 		});
@@ -34,10 +43,24 @@ $(function(){
   <input type="text" class="nValidate v[decimal]"/>
   <input type="text" class="nValidate v[dateTR]"/>
   <input type="text" class="nValidate v[phoneTR]"/>
-  <input type="text" class="nValidate v[min[5]]"/>
-  <input type="text" class="nValidate v[required max[5]]"/>
-
-  <a href="#" class="firstDivValidate">click to validate</a>
+  <input type="text" class="nValidate v[min[11]]"/>
+  <input type="text" class="nValidate v[max[5]]"/>
+  <a href="#" class="firstDivValidate">click to validate</a> 
+</div>
+<div class="secondDiv">
+  <h1>First Div Validate</h1>
+  <input type="text" class="nValidate v[email]"/>
+  <input type="text" class="nValidate v[required]"/>
+  <input type="text" class="nValidate v[number]"/>
+  <input type="text" class="nValidate v[letter]"/>
+  <input type="text" class="nValidate v[letterornumber]"/>
+  <input type="text" class="nValidate v[url]"/>
+  <input type="text" class="nValidate v[decimal]"/>
+  <input type="text" class="nValidate v[dateTR]"/>
+  <input type="text" class="nValidate v[phoneTR]"/>
+  <input type="text" class="nValidate v[min[11]]"/>
+  <input type="text" class="nValidate v[max[5]]"/>
+  <a href="#" class="secondDivValidate">click to validate</a> 
 </div>
 </body>
 </html>

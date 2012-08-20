@@ -8,21 +8,36 @@
         var defaults = {
 			form : false,
             frame : null,
-			errorText : true
+			error : true,
+			errorText : {
+				required : 'Bu Alan Boş Geçilemez',
+				email : 'Hatalı Email Adresi',
+				number : 'Bu Alana Yanlızca Sayı Girilebilir',
+				letter : 'Bu Alana Yanlızca Metin Girilebilir',
+				letterornumber: 'Bu Alana Yanlızca Metin ve Sayı Girilebilir',
+				decimal : 'Bu Alana Yanlızca Sayı veya Rasyonel Sayı Girilebilir',
+				url : 'Bu Alana Yanlızca Url Girilebilir',
+				dateTR : 'Bu Alana Yanlızca Tarih Girilebilir "GG/AA/YYYY , GG-AA-YYYY"',
+				phoneTR : 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
+				min : 'En Az {count} Karakter Olmalıdır',
+				max : 'En Fazla {count} Karakter Olmalıdır',
+				
+			}
         }, settings = $.extend(defaults, options);
 
         var $validate = "validate",
 			$class = '.nValidate',
-            $validateFrame = settings.frame +' '+ $class,
+			$dom = this,
 			$validatePattern = null,
 			$firstValidate = 0,
-			$errorClass = 'span.errorText',
+			$errorClass = 'span.error',
 			$minmax = 0;
+			
 			
         $.nonControl = function () {
 			$firstValidate = 0;
 			$($errorClass).remove();
-            $($validateFrame).each(function () {
+            $($dom).children($class).each(function () {
                 $.nonScan(this, this.className);
             });
         };
@@ -38,9 +53,8 @@
                 if ($array.length > 0){
 					$multi = $array[1].split(' ');
 					for(i in $multi){
-						$sizePattern = /^min\[|^max\[([0-9])\]$/g;
+						$sizePattern = /^[min\[|max\[]+([0-9]+)\]$/g;
 						$size = $sizePattern.exec($multi[i]);
-						console.log($size);
 						if($size != null){
 							if($size.length > 0){
 								$minmax = parseInt($size[1]);
@@ -58,46 +72,48 @@
 		$.nonTrigger = function($this,$class){
 			switch ($class){
 				case 'email':
-					validations.email($this.value) == false ? $.addValidateClass($this) : '';
+					validations.email($this.value) == false ? $.addValidateClass($this,settings.errorText.email) : '';
 				break;
 				case 'required':
-					validations.required($this.value) == false ? $.addValidateClass($this) : '';
+					validations.required($this.value) == false ? $.addValidateClass($this,settings.errorText.required) : '';
 				break;
 				case 'number':
-					validations.number($this.value) == false ? $.addValidateClass($this) : '';
+					validations.number($this.value) == false ? $.addValidateClass($this,settings.errorText.number) : '';
 				break;
 				case 'letter':
-					validations.letter($this.value) == false ? $.addValidateClass($this) : '';
+					validations.letter($this.value) == false ? $.addValidateClass($this,settings.errorText.letter) : '';
 				break;
 				case 'letterornumber':
-					validations.letterornumber($this.value) == false ? $.addValidateClass($this) : '';
+					validations.letterornumber($this.value) == false ? $.addValidateClass($this,settings.errorText.letterornumber) : '';
 				break;
 				case 'decimal':
-					validations.decimal($this.value) == false ? $.addValidateClass($this) : '';
+					validations.decimal($this.value) == false || $this.value == '' ? $.addValidateClass($this,settings.errorText.decimal) : '';
 				break;
 				case 'url':
-					validations.url($this.value) == false ? $.addValidateClass($this) : '';
+					validations.url($this.value) == false ? $.addValidateClass($this,settings.errorText.url) : '';
 				break;
 				case 'dateTR':
-					validations.dateTR($this.value) == false ? $.addValidateClass($this) : '';
+					validations.dateTR($this.value) == false ? $.addValidateClass($this,settings.errorText.dateTR) : '';
 				break;
 				case 'phoneTR':
-					validations.phoneTR($this.value) == false ? $.addValidateClass($this) : '';
+					validations.phoneTR($this.value) == false ? $.addValidateClass($this,settings.errorText.phoneTR) : '';
 				break;
 				case 'min':
-					validations.min($this.value) == false ? $.addValidateClass($this) : '';
+					settings.errorText.min = settings.errorText.min.replace(/\{count\}/g,$minmax);
+					validations.min($this.value) == false ? $.addValidateClass($this,settings.errorText.min) : '';
 				break;
 				case 'max':
-					validations.max($this.value) == false ? $.addValidateClass($this) : '';
+					settings.errorText.max = settings.errorText.max.replace(/\{count\}/g,$minmax);
+					validations.max($this.value) == false ? $.addValidateClass($this,settings.errorText.max) : '';
 				break;
 			}
 		};
 		
-		$.addValidateClass = function($this){
+		$.addValidateClass = function($this,$text){
 			$firstValidate++;
 			$($this).addClass($validate);
-			if(settings.errorText)
-				$.errorTextAdd($this);
+			if(settings.error)
+				$($this).after('<span class="error">'+ $text +'</span>');
 			if($firstValidate == 1){
 				$('html,body').animate({
 					scrollTop: $($this).offset().top - 20
@@ -105,9 +121,9 @@
 			}
 		};
 		
-		$.errorTextAdd = function($this){
-			$($this).after('<span class="errorText">Dikkat</span>');	
-		}
+	/*	$.errorTextAdd = function($this){
+			$($this).after('<span class="error">Dikkat</span>');	
+		}*/
 		
 		$.start = function(){
 			if(!settings.form){
@@ -160,14 +176,16 @@
 	   			return pattern.test(val);
 			},
 			min : function(val){
-				return val.length < $minmax ? false : true;	
+				return val.length < $minmax || val.length == 0 ? false : true;	
+				console.log($minmax);
 			},
 			max : function(val){
-				return val.length > $minmax ? false : true;	
+				return val.length > $minmax || val.length == 0 ? false : true;	
 			}
 		};
 		
 		//trigger pluging
 		$.start();
+		settings.frame = $dom;
     };
 })(jQuery);
