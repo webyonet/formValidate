@@ -28,6 +28,7 @@
         $.nonScan = function ($this, $class) {
             var $pattern = new RegExp('v\\[(.*)\\]','g'), 
 				array = $pattern.exec($class);
+				console.log(array);
             if (array != null) {
                 if (array.length > 0){
 					switch (array[1]){
@@ -50,6 +51,26 @@
 						case 'letterornumber':
 							$firstValidate++;
 							validations.letterornumber($this.value) == false ? $.addValidateClass($this) : '';
+						break;
+						case 'decimal':
+							$firstValidate++;
+							validations.decimal($this.value) == false ? $.addValidateClass($this) : '';
+						break;
+						case 'url':
+							$firstValidate++;
+							validations.url($this.value) == false ? $.addValidateClass($this) : '';
+						break;
+						case 'dateTR':
+							$firstValidate++;
+							validations.dateTR($this.value) == false ? $.addValidateClass($this) : '';
+						break;
+						case 'phoneTR':
+							$firstValidate++;
+							validations.phoneTR($this.value) == false ? $.addValidateClass($this) : '';
+						break;
+						case 'min':
+							$firstValidate++;
+							validations.phoneTR($this.value) == false ? $.addValidateClass($this) : '';
 						break;
 					}
 				}
@@ -107,7 +128,29 @@
 			letterornumber : function(val){
 				pattern = /^[0-9a-zA-Z]+$/;  
 	   			return pattern.test(val);
-			}	
+			},
+			decimal : function(val){
+				pattern = /^[\-\+]?(([0-9]+)([\.,]([0-9]+))?|([\.,]([0-9]+))?)$/;  
+	   			return pattern.test(val);
+			},
+			url : function(val){
+				pattern = /(http|https|ftp):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/;  
+	   			return pattern.test(val);
+			},
+			dateTR : function(val){
+				pattern = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;  
+	   			return pattern.test(val);
+			},
+			phoneTR : function(val){
+				pattern = /0[\(|\s][0-9]{3}\)?[-\s\/][0-9]{3}[-\s\/][0-9]{2}[-\s\/][0-9]{2}/;  
+	   			return pattern.test(val);
+			},
+			min : function(val){
+				return '';	
+			},
+			max : function(val){
+				return '';	
+			}
 		};
 		
 		//trigger pluging
