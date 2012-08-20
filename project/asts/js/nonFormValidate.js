@@ -20,6 +20,7 @@
                 phoneTR: 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
                 min: 'En Az {count} Karakter Olmalıdır',
                 max: 'En Fazla {count} Karakter Olmalıdır',
+				equals: 'Şifreniz Birbiriyle Uyuşmuyor'
             }
         }, settings = $.extend(defaults, options);
 
@@ -30,7 +31,8 @@
             $firstValidate = 0,
             $errorClass = 'span.error',
             $minmax = 0,
-            $minMaxText = '';
+            $minMaxText = '',
+			$password = '';
 			
         $.nonControl = function () {
             $firstValidate = 0;
@@ -51,12 +53,12 @@
                 if ($array.length > 0) {
                     $multi = $array[1].split(' ');
                     for (i in $multi) {
-                        $sizePattern = new RegExp('^[min\\[|max\\[]+([0-9]+)\\]$', 'g');
+                        $sizePattern = new RegExp('^[min\\[|max\\[|password\\[|equals\\[]+([0-9]+)\\]$', 'g');
                         $size = $sizePattern.exec($multi[i]);
                         if ($size != null) {
                             if ($size.length > 0) {
                                 $minmax = parseInt($size[1]);
-                                $multi[i] = $size[0].replace(/[^min|^max]/g, '');
+                                $multi[i] = $size[0].replace(/[^min|^max|^password|^equals]/g, '');
                             }
                         };
                         $.nonTrigger($this, $multi[i]);
@@ -104,6 +106,12 @@
             case 'max':
                 $minMaxText = settings.errorText.max.replace(/\{count\}/g, $minmax);
                 validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText) : '';
+                break;
+			case 'password':
+            	$password = $this.value
+                break;
+			case 'equals':
+            	validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals) : '';
                 break;
             }
         };
@@ -180,6 +188,9 @@
             },
             max: function (val) {
                 return val.length > $minmax || val.length == 0 ? false : true;
+            },
+			equals: function (val) {
+                return val != $password ? false : true;
             }
         };
 
