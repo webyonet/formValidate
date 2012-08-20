@@ -114,9 +114,9 @@
             $firstValidate++;
             $($this).addClass($validate);
             if (settings.error){
-				if($($this).next('span.error').length < 1) 
+				if($($this).next('span.error').length < 1) {
 					$($this).after('<span class="error">' + $text + '</span>');
-				else if(settings.multierrortext){
+				}else if(settings.multierrortext){
 					$($this).next('span.error').append(document.createTextNode(' ' + $text));	
 				}
 			}
@@ -133,7 +133,7 @@
                     $.nonControl();
                 }
             } else {
-                alert('true');
+                alert('form true');
             }
         };
 
