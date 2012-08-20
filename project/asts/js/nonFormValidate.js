@@ -8,6 +8,7 @@
             form: false,
             frame: null,
             error: true,
+			multierrortext : true ,
             errorText: {
                 required: 'Bu Alan Boş Geçilemez',
                 email: 'Hatalı Email Adresi',
@@ -112,7 +113,13 @@
         $.addValidateClass = function ($this, $text) {
             $firstValidate++;
             $($this).addClass($validate);
-            if (settings.error) $($this).after('<span class="error">' + $text + '</span>');
+            if (settings.error){
+				if($($this).next('span.error').length < 1) 
+					$($this).after('<span class="error">' + $text + '</span>');
+				else if(settings.multierrortext){
+					$($this).next('span.error').append(document.createTextNode(' ' + $text));	
+				}
+			}
             if ($firstValidate == 1) {
                 $('html,body').animate({
                     scrollTop: $($this).offset().top - 20
