@@ -32,7 +32,8 @@
             $errorClass = 'span.error',
             $minmax = 0,
             $minMaxText = '',
-			$password = '';
+			$password = '',
+			$focusOut = false;
 			
         $.nonControl = function () {
             $firstValidate = 0;
@@ -41,8 +42,13 @@
                 $.nonScan(this, this.className);
             });
         };
-
-        $.nonScan = function ($this, $class) {
+		
+        $.nonScan = function ($this, $class, $out) {
+			if(typeof $out != 'undefined'){
+				$($this).removeClass('validate');
+				$focusOut = true;
+				console.log($this);
+			}
             var $pattern = new RegExp('v\\[(.*)\\]', 'g'),
                 $array = $pattern.exec($class),
                 $size,
@@ -123,7 +129,10 @@
 				if($($this).next('span.error').length < 1) {
 					$($this).after('<span class="error">' + $text + '</span>');
 				}else if(settings.multierrortext){
-					$($this).next('span.error').append(document.createTextNode(' ' + $text));	
+					if(!$focusOut)
+						$($this).next('span.error').append(document.createTextNode(' ' + $text));
+					else
+						$($this).next('span.error').text($text);
 				}
 			}
             if ($firstValidate == 1) {
@@ -131,6 +140,7 @@
                     scrollTop: $($this).offset().top - 20
                 }, 1000);
             }
+			$focusOut = false;
         };
 
         $.start = function () {
@@ -139,14 +149,17 @@
                     $.nonControl();
                 }
             } else {
-                alert('form true');
+                console.log('form true');
             }
         };
-
-        $('.' + $validate).live('focusout', function () {
-            $(this).removeClass($validate);
+		
+		$($class).live('focusout', function () {
+			$firstValidate = 0;
+			$.nonScan(this,this.className,true);
+			if(!$(this).hasClass('validate'))
+				$(this).next('span.error').remove();
         });
-
+		
         var validations = {
             required: function (val) {
                 return val == '' ? false : true;
