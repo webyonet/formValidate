@@ -20,7 +20,10 @@
                 phoneTR: 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
                 min: 'En Az {count} Karakter Olmalıdır',
                 max: 'En Fazla {count} Karakter Olmalıdır',
-				equals: 'Şifreniz Birbiriyle Uyuşmuyor'
+				equals: 'Şifreniz Birbiriyle Uyuşmuyor',
+				checkbox: 'Bu Alanı İşaretlemek Zorunludur',
+				radio: 'Bu Alanı işaretlemek Zorunludur',
+				list: 'Bir Seçim Yapmalısınız'
             }
         }, settings = $.extend(defaults, options);
 
@@ -33,7 +36,10 @@
             $minmax = 0,
             $minMaxText = '',
 			$password = '',
-			$focusOut = false;
+			$focusOut = false,
+			$type,
+			$choseControl = false,
+			$choseGroup = '';
 			
         $.nonControl = function () {
             $firstValidate = 0;
@@ -47,34 +53,41 @@
 			if(typeof $out != 'undefined'){
 				$($this).removeClass('validate');
 				$focusOut = true;
-				console.log($this);
 			}
             var $pattern = new RegExp('v\\[(.*)\\]', 'g'),
                 $array = $pattern.exec($class),
                 $size,
                 $sizePattern,
                 $multi = [];
-
             if ($array != null) {
                 if ($array.length > 0) {
                     $multi = $array[1].split(' ');
                     for (i in $multi) {
-                        $sizePattern = new RegExp('^[min\\[|max\\[|password\\[|equals\\[]+([0-9]+)\\]$', 'g');
+                        $sizePattern = new RegExp('^[min\\[|max\\[|password\\[|equals\\[|checkbox\\[]+([0-9]+)\\]$', 'g');
                         $size = $sizePattern.exec($multi[i]);
                         if ($size != null) {
                             if ($size.length > 0) {
                                 $minmax = parseInt($size[1]);
-                                $multi[i] = $size[0].replace(/[^min|^max|^password|^equals]/g, '');
+                                $multi[i] = $size[0].replace(/[^min|^max|^password|^equals|^checkbox]/g, '');
                             }
                         };
-                        $.nonTrigger($this, $multi[i]);
+						if($multi[i] == 'checkbox' || $multi[i] == 'radio'){
+							console.log($multi[i]+'ch -rb alanı');
+							$.nonTrigger($this, $multi[i]);
+						}else{
+							console.log('input alanı');
+						}
                     } //for
                 }
             } else {
-                console.log($($this).attr('type'));
+                console.error('insert "v[required]" type of validation Elements');
             }
         };
-
+		
+		$.groupClear = function(grp){
+			
+		};
+		
         $.nonTrigger = function ($this, $class) {
             $minMaxText = '';
             switch ($class) {
@@ -119,9 +132,14 @@
 			case 'equals':
             	validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals) : '';
                 break;
+			case 'checkbox':
+			//alert('check');
+			validations.checkbox($this);
+            	/*validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals) : '';*/
+                break;
             }
         };
-
+		
         $.addValidateClass = function ($this, $text) {
             $firstValidate++;
             $($this).addClass($validate);
@@ -154,10 +172,17 @@
         };
 		
 		$($class).live('focusout', function () {
-			$firstValidate = 0;
-			$.nonScan(this,this.className,true);
-			if(!$(this).hasClass('validate'))
-				$(this).next('span.error').remove();
+			$type = $(this).attr('type');
+			if($type != 'checkbox' && $type != 'radio'){
+				$firstValidate = 0;
+				$.nonScan(this,this.className,true);
+				if(!$(this).hasClass('validate'))
+					$(this).next('span.error').remove();
+			}
+        });
+		
+		$($class).live('change', function () {
+			console.log('change')
         });
 		
         var validations = {
@@ -204,8 +229,31 @@
             },
 			equals: function (val) {
                 return val != $password ? false : true;
-            }
+            },
+			checkbox: function(dom){
+				$.chooseControl(dom);
+			}
         };
+		
+		$.chooseControl = function(dom){
+			var pattern = /v\[.*\]/;
+			$choseGroup = pattern.exec(dom.className).toString();
+			$choseControl = false;
+			$($dom).children($class).each(function () {
+                $type = $(this).attr('type');
+				if($type == 'checkbox' || $type == 'radio'){
+					if($choseGroup == pattern.exec(this.className).toString()){
+						if($(this).is(':checked') == true){
+						$choseControl = true;
+						console.log('girdi');
+						}	
+					}
+				}
+				//console.log($choseControl + ' '+ $choseName);
+            });
+			
+		};
+		
         //trigger pluging
         $.start();
     };
