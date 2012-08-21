@@ -50,10 +50,9 @@
         };
 		
         $.nonScan = function ($this, $class, $out) {
-			if(typeof $out != 'undefined'){
-				$($this).removeClass('validate');
+			if(typeof $out != 'undefined')
 				$focusOut = true;
-			}
+				
             var $pattern = new RegExp('v\\[(.*)\\]', 'g'),
                 $array = $pattern.exec($class),
                 $size,
@@ -72,10 +71,10 @@
                             }
                         };
 						if($multi[i] == 'checkbox' || $multi[i] == 'radio'){
-							console.log($multi[i]+'ch -rb alanı');
-							$.nonTrigger($this, $multi[i]);
+							if($choseGroup != $.groupClear($this))
+								$.nonTrigger($this, $multi[i]);
 						}else{
-							console.log('input alanı');
+							$.nonTrigger($this, $multi[i]);
 						}
                     } //for
                 }
@@ -84,64 +83,9 @@
             }
         };
 		
-		$.groupClear = function(grp){
-			
-		};
-		
-        $.nonTrigger = function ($this, $class) {
-            $minMaxText = '';
-            switch ($class) {
-            case 'email':
-                validations.email($this.value) == false ? $.addValidateClass($this, settings.errorText.email) : '';
-                break;
-            case 'required':
-                validations.required($this.value) == false ? $.addValidateClass($this, settings.errorText.required) : '';
-                break;
-            case 'number':
-                validations.number($this.value) == false ? $.addValidateClass($this, settings.errorText.number) : '';
-                break;
-            case 'letter':
-                validations.letter($this.value) == false ? $.addValidateClass($this, settings.errorText.letter) : '';
-                break;
-            case 'letterornumber':
-                validations.letterornumber($this.value) == false ? $.addValidateClass($this, settings.errorText.letterornumber) : '';
-                break;
-            case 'decimal':
-                validations.decimal($this.value) == false || $this.value == '' ? $.addValidateClass($this, settings.errorText.decimal) : '';
-                break;
-            case 'url':
-                validations.url($this.value) == false ? $.addValidateClass($this, settings.errorText.url) : '';
-                break;
-            case 'dateTR':
-                validations.dateTR($this.value) == false ? $.addValidateClass($this, settings.errorText.dateTR) : '';
-                break;
-            case 'phoneTR':
-                validations.phoneTR($this.value) == false ? $.addValidateClass($this, settings.errorText.phoneTR) : '';
-                break;
-            case 'min':
-                $minMaxText = settings.errorText.min.replace(/\{count\}/g, $minmax);
-                validations.min($this.value) == false ? $.addValidateClass($this, $minMaxText) : '';
-                break;
-            case 'max':
-                $minMaxText = settings.errorText.max.replace(/\{count\}/g, $minmax);
-                validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText) : '';
-                break;
-			case 'password':
-            	$password = $this.value
-                break;
-			case 'equals':
-            	validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals) : '';
-                break;
-			case 'checkbox':
-			//alert('check');
-			validations.checkbox($this);
-            	/*validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals) : '';*/
-                break;
-            }
-        };
-		
-        $.addValidateClass = function ($this, $text) {
+		$.addValidateClass = function ($this, $text) {
             $firstValidate++;
+			console.log($type);
             $($this).addClass($validate);
             if (settings.error){
 				if($($this).next('span.error').length < 1) {
@@ -160,6 +104,80 @@
             }
 			$focusOut = false;
         };
+		
+		$.chooseControl = function(dom){
+			$choseGroup = $.groupClear(dom);
+			$choseControl = false;
+			$($dom).children($class).each(function () {
+                $type = $(this).attr('type');
+				if($type == 'checkbox' || $type == 'radio'){
+					if($choseGroup == $.groupClear(this)){
+						if($(this).is(':checked') == true){
+							$choseControl = true;
+						}	
+					}
+				}
+            });
+			return $choseControl;
+		};
+		
+		$.groupClear = function(dom){
+			var pattern = /v\[.*\]/;
+			return pattern.exec(dom.className).toString();
+		};
+		
+        $.nonTrigger = function ($this, $class) {
+            $minMaxText = '';
+            switch ($class) {
+            case 'email':
+                validations.email($this.value) == false ? $.addValidateClass($this, settings.errorText.email) : $.removeValidate($this);
+                break;
+            case 'required':
+                validations.required($this.value) == false ? $.addValidateClass($this, settings.errorText.required) : $.removeValidate($this);
+                break;
+            case 'number':
+                validations.number($this.value) == false ? $.addValidateClass($this, settings.errorText.number) : $.removeValidate($this);
+                break;
+            case 'letter':
+                validations.letter($this.value) == false ? $.addValidateClass($this, settings.errorText.letter) : $.removeValidate($this);
+                break;
+            case 'letterornumber':
+                validations.letterornumber($this.value) == false ? $.addValidateClass($this, settings.errorText.letterornumber) : $.removeValidate($this);
+                break;
+            case 'decimal':
+                validations.decimal($this.value) == false || $this.value == '' ? $.addValidateClass($this, settings.errorText.decimal) : $.removeValidate($this);
+                break;
+            case 'url':
+                validations.url($this.value) == false ? $.addValidateClass($this, settings.errorText.url) : $.removeValidate($this);
+                break;
+            case 'dateTR':
+                validations.dateTR($this.value) == false ? $.addValidateClass($this, settings.errorText.dateTR) : $.removeValidate($this);
+                break;
+            case 'phoneTR':
+                validations.phoneTR($this.value) == false ? $.addValidateClass($this, settings.errorText.phoneTR) : $.removeValidate($this);
+                break;
+            case 'min':
+                $minMaxText = settings.errorText.min.replace(/\{count\}/g, $minmax);
+                validations.min($this.value) == false ? $.addValidateClass($this, $minMaxText) : $.removeValidate($this);
+                break;
+            case 'max':
+                $minMaxText = settings.errorText.max.replace(/\{count\}/g, $minmax);
+                validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText) : $.removeValidate($this);
+                break;
+			case 'password':
+            	$password = $this.value
+                break;
+			case 'equals':
+            	validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals) : $.removeValidate($this);
+                break;
+			case 'checkbox':
+				validations.checkbox($this) == false ? $.addValidateClass($this, settings.errorText.checkbox) : $.removeValidate($this);
+                break;
+			case 'radio':
+				validations.radio($this) == false ? $.addValidateClass($this, settings.errorText.checkbox) : $.removeValidate($this);
+                break;
+            }
+        };
 
         $.start = function () {
             if (!settings.form) {
@@ -170,7 +188,7 @@
                 console.log('form true');
             }
         };
-		
+
 		$($class).live('focusout', function () {
 			$type = $(this).attr('type');
 			if($type != 'checkbox' && $type != 'radio'){
@@ -182,8 +200,12 @@
         });
 		
 		$($class).live('change', function () {
-			console.log('change')
+			//console.log('change')
         });
+		
+		$.removeValidate = function(dom){
+			$(dom).removeClass('validate');
+		}
 		
         var validations = {
             required: function (val) {
@@ -231,29 +253,13 @@
                 return val != $password ? false : true;
             },
 			checkbox: function(dom){
-				$.chooseControl(dom);
+				return $.chooseControl(dom);
+			},
+			radio: function(dom){
+				return $.chooseControl(dom);
 			}
         };
-		
-		$.chooseControl = function(dom){
-			var pattern = /v\[.*\]/;
-			$choseGroup = pattern.exec(dom.className).toString();
-			$choseControl = false;
-			$($dom).children($class).each(function () {
-                $type = $(this).attr('type');
-				if($type == 'checkbox' || $type == 'radio'){
-					if($choseGroup == pattern.exec(this.className).toString()){
-						if($(this).is(':checked') == true){
-						$choseControl = true;
-						console.log('girdi');
-						}	
-					}
-				}
-				//console.log($choseControl + ' '+ $choseName);
-            });
-			
-		};
-		
+
         //trigger pluging
         $.start();
     };
