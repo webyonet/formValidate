@@ -7,7 +7,7 @@
         var defaults = {
             form: false,
             error: true,
-			multierrortext : true ,
+            multierrortext: true,
             errorText: {
                 required: 'Bu Alan Boş Geçilemez',
                 email: 'Hatalı Email Adresi',
@@ -20,10 +20,10 @@
                 phoneTR: 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
                 min: 'En Az {count} Karakter Olmalıdır',
                 max: 'En Fazla {count} Karakter Olmalıdır',
-				equals: 'Şifreniz Birbiriyle Uyuşmuyor',
-				checkbox: 'Bu Alanı İşaretlemek Zorunludur',
-				radio: 'Bu Alanı işaretlemek Zorunludur radio',
-				list: 'Bir Seçim Yapmalısınız'
+                equals: 'Şifreniz Birbiriyle Uyuşmuyor',
+                checkbox: 'Bu Alanı İşaretlemek Zorunludur',
+                radio: 'Bu Alanı işaretlemek Zorunludur radio',
+                list: 'Bir Seçim Yapmalısınız'
             }
         }, settings = $.extend(defaults, options);
 
@@ -35,14 +35,14 @@
             $errorClass = 'span.error',
             $minmax = 0,
             $minMaxText = '',
-			$password = '',
-			$focusOut = false,
-			$type,
-			$choseControl = false,
-			$choseGroup = '',
-			$choseValidateGroup = false,
-			$removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email';
-			
+            $password = '',
+            $focusOut = false,
+            $type,
+            $choseControl = false,
+            $choseGroup = '',
+            $choseValidateGroup = false,
+            $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email';
+
         $.nonControl = function () {
             $firstValidate = 0;
             $($dom).children($errorClass).remove();
@@ -50,11 +50,10 @@
                 $.nonScan(this, this.className);
             });
         };
-		
+
         $.nonScan = function ($this, $class, $out) {
-			if(typeof $out != 'undefined')
-				$focusOut = true;
-				
+            if (typeof $out != 'undefined') $focusOut = true;
+
             var $pattern = new RegExp('v\\[(.*)\\]', 'g'),
                 $array = $pattern.exec($class),
                 $size,
@@ -72,73 +71,70 @@
                                 $multi[i] = $size[0].replace(/[^min|^max|^password|^equals|^checkbox|^radio]/g, '');
                             }
                         };
-						if($multi[i] == 'checkbox' || $multi[i] == 'radio'){
-							if($choseValidateGroup == false){
-								if($choseGroup != $.groupClear($this))
-									$.nonTrigger($this, $multi[i]);
-							}else{
-								$.chooseControl($this);
-								if($choseGroup == $.groupClear($this)){
-									$.nonTrigger($this, $multi[i]);
-								}
-							}
-						}else{
-							$.nonTrigger($this, $multi[i]);
-						}
+                        if ($multi[i] == 'checkbox' || $multi[i] == 'radio') {
+                            if ($choseValidateGroup == false) {
+                                if ($choseGroup != $.groupClear($this)) $.nonTrigger($this, $multi[i]);
+                            } else {
+                                $.chooseControl($this);
+                                if ($choseGroup == $.groupClear($this)) {
+                                    $.nonTrigger($this, $multi[i]);
+                                }
+                            }
+                        } else {
+                            $.nonTrigger($this, $multi[i]);
+                        }
                     } //for
                 }
             } else {
                 console.error('insert "v[required]" type of validation Elements');
             }
         };
-		
-		$.addValidateClass = function ($this, $text, $types) {
+
+        $.addValidateClass = function ($this, $text, $types) {
             $firstValidate++;
-            $($this).addClass($validate+' '+$types);
-            if (settings.error){
-				if($($this).next('span.error').length < 1) {
-					$($this).after('<span class="error">' + $text + '</span>');
-				}else if(settings.multierrortext){
-					if(!$focusOut)
-						$($this).next('span.error').append(document.createTextNode(' ' + $text));
-					else
-						$($this).next('span.error').text($text);
-				}
-			}
+            $($this).addClass($validate + ' ' + $types);
+            if (settings.error) {
+                if ($($this).next('span.error').length < 1) {
+                    $($this).after('<span class="error">' + $text + '</span>');
+                } else if (settings.multierrortext) {
+                    if (!$focusOut) $($this).next('span.error').append(document.createTextNode(' ' + $text));
+                    else $($this).next('span.error').text($text);
+                }
+            }
             if ($firstValidate == 1) {
                 $('html,body').animate({
                     scrollTop: $($this).offset().top - 20
                 }, 1000);
             }
-			$focusOut = false;
+            $focusOut = false;
         };
-		
-		$.chooseControl = function(dom){
-			$choseGroup = $.groupClear(dom);
-			$choseControl = false;
 
-			$($dom).children($class).each(function () {
+        $.chooseControl = function (dom) {
+            $choseGroup = $.groupClear(dom);
+            $choseControl = false;
+
+            $($dom).children($class).each(function () {
                 $type = $(this).attr('type');
-				if($type == 'checkbox' || $type == 'radio'){
-					if($choseGroup == $.groupClear(this)){
-						if($(this).is(':checked') == true){
-							$choseControl = true;
-						}	
-					}
-				}
+                if ($type == 'checkbox' || $type == 'radio') {
+                    if ($choseGroup == $.groupClear(this)) {
+                        if ($(this).is(':checked') == true) {
+                            $choseControl = true;
+                        }
+                    }
+                }
             });
-			return $choseControl;
-		};
+            return $choseControl;
+        };
 
-		$($class).live('change', function () {
-			if($dom != null){
-				if($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio'){
-					$firstValidate = 0;
-					$choseValidateGroup = true;
-					$.nonScan(this,this.className);
-				}
-			}
-			$choseValidateGroup = false;
+        $($class).live('change', function () {
+            if ($dom != null) {
+                if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio') {
+                    $firstValidate = 0;
+                    $choseValidateGroup = true;
+                    $.nonScan(this, this.className);
+                }
+            }
+            $choseValidateGroup = false;
         });
 
         $.start = function () {
@@ -150,43 +146,40 @@
                 console.log('form true');
             }
         };
-		
-		$.groupClear = function(dom){
-			var pattern = /v\[.*\]/;
-			return pattern.exec(dom.className).toString();
-		};
-		
-		$.groupValidateClear = function(dom){
-			var $validateGroup = $.groupClear(dom);
-			$($dom).children($class).each(function () {
+
+        $.groupClear = function (dom) {
+            var pattern = /v\[.*\]/;
+            return pattern.exec(dom.className).toString();
+        };
+
+        $.groupValidateClear = function (dom) {
+            var $validateGroup = $.groupClear(dom);
+            $($dom).children($class).each(function () {
                 $type = $(this).attr('type');
-				if($type == 'checkbox' || $type == 'radio'){
-					if($validateGroup == $.groupClear(this)){
-						$(this).removeClass($removeClassName);
-						$(this).next('span.error').remove();
-					}
-				}
+                if ($type == 'checkbox' || $type == 'radio') {
+                    if ($validateGroup == $.groupClear(this)) {
+                        $(this).removeClass($removeClassName);
+                        $(this).next('span.error').remove();
+                    }
+                }
             });
-		};
-		
-		$.removeValidate = function(dom){
-			$(dom).removeClass($removeClassName);
-		};
-		
-		$($class).live('focusout', function () {
-			if($dom != null){
-				if($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio'){
-					$firstValidate = 0;
-					$.nonScan(this,this.className,true);
-					if(!$(this).hasClass('validate'))
-						$(this).next('span.error').remove();
-				}
-			}
+        };
+
+        $.removeValidate = function (dom) {
+            $(dom).removeClass($removeClassName);
+        };
+
+        $($class).live('focusout', function () {
+            if ($dom != null) {
+                if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
+                    $firstValidate = 0;
+                    $.nonScan(this, this.className, true);
+                    if (!$(this).hasClass('validate')) $(this).next('span.error').remove();
+                }
+            }
         });
-		
-		
-		
-		$.nonTrigger = function ($this, $class) {
+
+        $.nonTrigger = function ($this, $class) {
             $minMaxText = '';
             switch ($class) {
             case 'email':
@@ -224,29 +217,29 @@
                 $minMaxText = settings.errorText.max.replace(/\{count\}/g, $minmax);
                 validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
-			case 'password':
-            	$password = $this.value
+            case 'password':
+                $password = $this.value
                 break;
-			case 'equals':
-            	validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
+            case 'equals':
+                validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
                 break;
-			case 'checkbox':
-				if(validations.checkbox($this) == false){
-						$.addValidateClass($this, settings.errorText.checkbox, $class);
-				}else{
-					$.groupValidateClear($this);
-				}
+            case 'checkbox':
+                if (validations.checkbox($this) == false) {
+                    $.addValidateClass($this, settings.errorText.checkbox, $class);
+                } else {
+                    $.groupValidateClear($this);
+                }
                 break;
-			case 'radio':
-				if(validations.radio($this) == false){
-						$.addValidateClass($this, settings.errorText.radio, $class);
-				}else{
-					$.groupValidateClear($this);
-				}
+            case 'radio':
+                if (validations.radio($this) == false) {
+                    $.addValidateClass($this, settings.errorText.radio, $class);
+                } else {
+                    $.groupValidateClear($this);
+                }
                 break;
             }
         };
-		
+
         var validations = {
             required: function (val) {
                 return val == '' ? false : true;
@@ -289,18 +282,18 @@
             max: function (val) {
                 return val.length > $minmax || val.length == 0 ? false : true;
             },
-			equals: function (val) {
+            equals: function (val) {
                 return val != $password ? false : true;
             },
-			checkbox: function(dom){
-				return $.chooseControl(dom);
-			},
-			radio: function(dom){
-				return $.chooseControl(dom);
-			},
-			list: function(dom){
-				
-			}
+            checkbox: function (dom) {
+                return $.chooseControl(dom);
+            },
+            radio: function (dom) {
+                return $.chooseControl(dom);
+            },
+            list: function (dom) {
+
+            }
         };
 
         //trigger pluging
