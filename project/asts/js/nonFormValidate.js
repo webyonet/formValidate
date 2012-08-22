@@ -40,7 +40,8 @@
 			$type,
 			$choseControl = false,
 			$choseGroup = '',
-			$choseValidateGroup = false;
+			$choseValidateGroup = false,
+			$removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email';
 			
         $.nonControl = function () {
             $firstValidate = 0;
@@ -91,10 +92,9 @@
             }
         };
 		
-		$.addValidateClass = function ($this, $text) {
-			console.log($this);
+		$.addValidateClass = function ($this, $text, $types) {
             $firstValidate++;
-            $($this).addClass($validate);
+            $($this).addClass($validate+' '+$types);
             if (settings.error){
 				if($($this).next('span.error').length < 1) {
 					$($this).after('<span class="error">' + $text + '</span>');
@@ -119,7 +119,6 @@
 
 			$($dom).children($class).each(function () {
                 $type = $(this).attr('type');
-				//console.log($(this).attr('type'))
 				if($type == 'checkbox' || $type == 'radio'){
 					if($choseGroup == $.groupClear(this)){
 						if($(this).is(':checked') == true){
@@ -163,7 +162,7 @@
                 $type = $(this).attr('type');
 				if($type == 'checkbox' || $type == 'radio'){
 					if($validateGroup == $.groupClear(this)){
-						$(this).removeClass('vadidate');
+						$(this).removeClass($removeClassName);
 						$(this).next('span.error').remove();
 					}
 				}
@@ -171,7 +170,7 @@
 		};
 		
 		$.removeValidate = function(dom){
-			$(dom).removeClass('validate');
+			$(dom).removeClass($removeClassName);
 		};
 		
 		$($class).live('focusout', function () {
@@ -191,63 +190,59 @@
             $minMaxText = '';
             switch ($class) {
             case 'email':
-                validations.email($this.value) == false ? $.addValidateClass($this, settings.errorText.email) : $.removeValidate($this);
+                validations.email($this.value) == false ? $.addValidateClass($this, settings.errorText.email, $class) : $.removeValidate($this);
                 break;
             case 'required':
-                validations.required($this.value) == false ? $.addValidateClass($this, settings.errorText.required) : $.removeValidate($this);
+                validations.required($this.value) == false ? $.addValidateClass($this, settings.errorText.required, $class) : $.removeValidate($this);
                 break;
             case 'number':
-                validations.number($this.value) == false ? $.addValidateClass($this, settings.errorText.number) : $.removeValidate($this);
+                validations.number($this.value) == false ? $.addValidateClass($this, settings.errorText.number, $class) : $.removeValidate($this);
                 break;
             case 'letter':
-                validations.letter($this.value) == false ? $.addValidateClass($this, settings.errorText.letter) : $.removeValidate($this);
+                validations.letter($this.value) == false ? $.addValidateClass($this, settings.errorText.letter, $class) : $.removeValidate($this);
                 break;
             case 'letterornumber':
-                validations.letterornumber($this.value) == false ? $.addValidateClass($this, settings.errorText.letterornumber) : $.removeValidate($this);
+                validations.letterornumber($this.value) == false ? $.addValidateClass($this, settings.errorText.letterornumber, $class) : $.removeValidate($this);
                 break;
             case 'decimal':
-                validations.decimal($this.value) == false || $this.value == '' ? $.addValidateClass($this, settings.errorText.decimal) : $.removeValidate($this);
+                validations.decimal($this.value) == false || $this.value == '' ? $.addValidateClass($this, settings.errorText.decimal, $class) : $.removeValidate($this);
                 break;
             case 'url':
-                validations.url($this.value) == false ? $.addValidateClass($this, settings.errorText.url) : $.removeValidate($this);
+                validations.url($this.value) == false ? $.addValidateClass($this, settings.errorText.url, $class) : $.removeValidate($this);
                 break;
             case 'dateTR':
-                validations.dateTR($this.value) == false ? $.addValidateClass($this, settings.errorText.dateTR) : $.removeValidate($this);
+                validations.dateTR($this.value) == false ? $.addValidateClass($this, settings.errorText.dateTR, $class) : $.removeValidate($this);
                 break;
             case 'phoneTR':
-                validations.phoneTR($this.value) == false ? $.addValidateClass($this, settings.errorText.phoneTR) : $.removeValidate($this);
+                validations.phoneTR($this.value) == false ? $.addValidateClass($this, settings.errorText.phoneTR, $class) : $.removeValidate($this);
                 break;
             case 'min':
                 $minMaxText = settings.errorText.min.replace(/\{count\}/g, $minmax);
-                validations.min($this.value) == false ? $.addValidateClass($this, $minMaxText) : $.removeValidate($this);
+                validations.min($this.value) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             case 'max':
                 $minMaxText = settings.errorText.max.replace(/\{count\}/g, $minmax);
-                validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText) : $.removeValidate($this);
+                validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
 			case 'password':
             	$password = $this.value
                 break;
 			case 'equals':
-            	validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals) : $.removeValidate($this);
+            	validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
                 break;
 			case 'checkbox':
-				if(validations.checkbox($this) == false){//--------------------------------------
-					if(!$choseValidateGroup)
-						$.addValidateClass($this, settings.errorText.checkbox);
-					else{
-						var ptr = new RegExp("nValidate v\\[.*\\]");
-						var ali = ptr.exec($this.className)
-						//ali = ali.replace(/^(\s)/g,'.')
-						console.log(ali);
-						//$.addValidateClass($($this.className), settings.errorText.checkbox);
-					}
+				if(validations.checkbox($this) == false){
+						$.addValidateClass($this, settings.errorText.checkbox, $class);
 				}else{
 					$.groupValidateClear($this);
 				}
                 break;
 			case 'radio':
-				validations.radio($this) == false ? $.addValidateClass($this, settings.errorText.radio) : $.removeValidate($this);
+				if(validations.radio($this) == false){
+						$.addValidateClass($this, settings.errorText.radio, $class);
+				}else{
+					$.groupValidateClear($this);
+				}
                 break;
             }
         };
