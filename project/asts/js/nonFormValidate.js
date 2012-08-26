@@ -41,6 +41,7 @@
             $choseControl = false,
             $choseGroup = '',
             $choseValidateGroup = false,
+			$skip = 0,
             $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email';
 
         $.nonControl = function () {
@@ -53,7 +54,7 @@
 
         $.nonScan = function ($this, $class, $out) {
             if (typeof $out != 'undefined') $focusOut = true;
-
+			$skip = 0;
             var $pattern = new RegExp('v\\[(.*)\\]', 'g'),
                 $array = $pattern.exec($class),
                 $size,
@@ -84,6 +85,7 @@
                             $.nonTrigger($this, $multi[i]);
                         }
                     } //for
+					//$focusOut = false;
                 }
             } else {
                 console.error('insert "v[required]" type of validation Elements');
@@ -92,16 +94,18 @@
 
         $.addValidateClass = function ($this, $text, $types) {
             $firstValidate++;
-            $($this).addClass($validate + ' ' + $types);
+			$skip++;
+            $($this).addClass($validate);
             if (settings.error) {
                 if ($($this).next('span.error').length < 1) {
-                    $($this).after('<span class="error">' + $text + '</span>');
+                    $($this).after('<span class="error '+ $types +'">' + $text + '</span>');
                 } else if (settings.multierrortext) {
                     if (!$focusOut) $($this).next('span.error').append(document.createTextNode(' ' + $text));
                     else $($this).next('span.error').text($text);
                 }
             }
             if ($firstValidate == 1) {
+			   //if ($($this).hasClass('validate')){
                 $('html,body').animate({
                     scrollTop: $($this).offset().top - 20
                 }, 1000);
@@ -127,6 +131,7 @@
         };
 
         $($class).live('change', function () {
+			$dom = $(this).closest('.nonFormValidate');
             if ($dom != null) {
                 if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio') {
                     $firstValidate = 0;
@@ -166,10 +171,12 @@
         };
 
         $.removeValidate = function (dom) {
-            $(dom).removeClass($removeClassName);
+			if($skip == 0)
+            	$(dom).removeClass($removeClassName);
         };
 
         $($class).live('focusout', function () {
+			$dom = $(this).closest('.nonFormValidate');
             if ($dom != null) {
                 if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
                     $firstValidate = 0;
