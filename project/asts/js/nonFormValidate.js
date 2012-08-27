@@ -42,6 +42,7 @@
             $choseGroup = '',
             $choseValidateGroup = false,
 			$skip = 0,
+			$choseValidateControl = true;
             $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email';
 
         $.nonControl = function () {
@@ -85,7 +86,7 @@
                             $.nonTrigger($this, $multi[i]);
                         }
                     } //for
-					//$focusOut = false;
+					$choseValidateControl = true;
                 }
             } else {
                 console.error('insert "v[required]" type of validation Elements');
@@ -97,26 +98,61 @@
 			$skip++;
             $($this).addClass($validate);
             if (settings.error) {
-                if ($($this).next('span.error').length < 1) {
-                    $($this).after('<span class="error '+ $types +'">' + $text + '</span>');
-                } else if (settings.multierrortext) {
-                    if (!$focusOut) $($this).next('span.error').append(document.createTextNode(' ' + $text));
-                    else $($this).next('span.error').text($text);
-                }
+				if($types != 'checkbox' && $types != 'radio'){
+					if ($($this).next('span.error').length == 0) {
+						$($this).after('<span class="error '+ $types +'">' + $text + '</span>');
+					} else if (settings.multierrortext) {
+						if (!$focusOut) $($this).next('span.error').append(document.createTextNode(', ' + $text));
+						else $($this).next('span.error').text($text);
+					}
+				}else{
+					if($choseValidateControl){
+						var $lastChose = $.choseLastError($this);
+						$($lastChose).after('<span class="error '+ $types +'">' + $text + '</span>');
+						$choseValidateControl = false;
+					}
+					
+				}
             }
             if ($firstValidate == 1) {
-			   //if ($($this).hasClass('validate')){
                 $('html,body').animate({
                     scrollTop: $($this).offset().top - 20
                 }, 1000);
             }
             $focusOut = false;
         };
-
+		
+		$.choseLastError = function(dom){
+			var $thisDom = $.groupClear(dom),
+				$thisCounter = 0,
+				$thisTemp = 0,
+				$thisReturn = '';
+			$($dom).children($class).each(function () {
+                $type = $(this).attr('type');
+                if ($type == 'checkbox' || $type == 'radio') {
+                    if ($choseGroup == $.groupClear(this)) {
+                        $thisCounter++;
+                    }
+                }
+            });
+			
+			$($dom).children($class).each(function (i) {
+                $type = $(this).attr('type');
+                if ($type == 'checkbox' || $type == 'radio') {
+                    if ($choseGroup == $.groupClear(this)) {
+                        $thisTemp++;
+						if($thisTemp == $thisCounter){
+							$thisReturn = this;
+						}
+                    }
+                }
+            });
+			return $thisReturn;
+		};
+		
         $.chooseControl = function (dom) {
             $choseGroup = $.groupClear(dom);
             $choseControl = false;
-
             $($dom).children($class).each(function () {
                 $type = $(this).attr('type');
                 if ($type == 'checkbox' || $type == 'radio') {
