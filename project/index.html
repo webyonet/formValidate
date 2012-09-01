@@ -13,9 +13,10 @@ $(function(){
 		form:false,
 	});*/
 	$('a.firstDivValidate').on('click',function(){
-		$('div.firstDiv').nonFormValidate({
-			form:false
-		});
+		var test = $('div.firstDiv').nonFormValidate({
+						form:false
+				   });
+		console.log (test);
 		return false;
 	});
 	$('a.secondDivValidate').on('click',function(){
