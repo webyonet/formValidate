@@ -283,7 +283,7 @@
                 validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             case 'password':
-                $password = $this.value
+                $password = $this.value;
                 break;
             case 'equals':
                 validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
@@ -362,7 +362,7 @@
         };
 		
         //trigger pluging
-        $.start();console.log('çalıştı');
+        $.start();
 		return $firstValidate == 0 ? true : false;
 		
     };

@@ -1,5 +1,5 @@
 /*
- * nonFormValidate jQuery Plugin v1.0.0.0
+ * nonFormValidate jQuery Plugin v1.1.0.0
  * Licensed under the MIT license.
  * Copyright 2012 G.Burak Demirezen
  */ 
@@ -9,6 +9,9 @@
             form: false,
             error: true,
             multierrortext: true,
+			focusout: false,
+			keyup: true,
+			change: true,
             errorText: {
                 required: 'Bu Alan Boş Geçilemez',
                 email: 'Hatalı Email Adresi',
@@ -27,7 +30,7 @@
                 list: 'Bir Seçim Yapmalısınız'
             }
         }, settings = $.extend(defaults, options);
-
+		
         var $validate = "validate",
             $class = '.nValidate',
             $dom = this,
@@ -43,11 +46,13 @@
             $choseGroup = '',
             $choseValidateGroup = false,
             $skip = 0,
-            $choseValidateControl = true;
-        $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email';
+            $choseValidateControl = true,
+			$scrollControll = false,
+        	$removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email';
 
         $.nonControl = function () {
             $firstValidate = 0;
+			$scrollControll = true;
             $($dom).children($errorClass).remove();
             $($dom).children($class).each(function () {
                 $.nonScan(this, this.className);
@@ -115,7 +120,7 @@
 
                 }
             }
-            if ($firstValidate == 1) {
+            if ($firstValidate == 1 && $scrollControll == true) {
                 $('html,body').animate({
                     scrollTop: $($this).offset().top - 20
                 }, 1000);
@@ -166,19 +171,7 @@
             });
             return $choseControl;
         };
-
-        $($class).live('change', function () {
-            $dom = $(this).closest('.nonFormValidate');
-            if ($dom != null) {
-                if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio') {
-                    $firstValidate = 0;
-                    $choseValidateGroup = true;
-                    $.nonScan(this, this.className);
-                }
-            }
-            $choseValidateGroup = false;
-        });
-
+		
         $.start = function () {
             if (!settings.form) {
                 if ($dom != null) {
@@ -188,7 +181,7 @@
                 console.log('form true');
             }
         };
-
+		
         $.groupClear = function (dom) {
             var pattern = /v\[.*\]/;
             return pattern.exec(dom.className).toString();
@@ -210,8 +203,23 @@
         $.removeValidate = function (dom) {
             if ($skip == 0) $(dom).removeClass($removeClassName);
         };
-
+		if(settings.change){
+		$($class).live('change', function () {
+			$scrollControll = false;
+            $dom = $(this).closest('.nonFormValidate');
+            if ($dom != null) {
+                if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio') {
+                    $firstValidate = 0;
+                    $choseValidateGroup = true;
+                    $.nonScan(this, this.className);
+                }
+            }
+            $choseValidateGroup = false;
+        });
+		}
+		if(settings.focusout){
         $($class).live('focusout', function () {
+			$scrollControll = false;
             $dom = $(this).closest('.nonFormValidate');
             if ($dom != null) {
                 if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
@@ -221,6 +229,20 @@
                 }
             }
         });
+		}
+		if(settings.keyup){
+		$($class).live('keyup', function () {
+			$scrollControll = false;
+            $dom = $(this).closest('.nonFormValidate');
+            if ($dom != null) {
+                if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
+                    $firstValidate = 0;
+                    $.nonScan(this, this.className, true);
+                    if (!$(this).hasClass('validate')) $(this).next('span.error').remove();
+                }
+            }
+        });
+		}
 
         $.nonTrigger = function ($this, $class) {
             $minMaxText = '';
@@ -312,7 +334,7 @@
                 return pattern.test(val);
             },
             dateTR: function (val) {
-                pattern = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+                pattern = /^(0?[1-9]|[12][0-9]|3[01])[\/\-\.](0?[1-9]|1[012])[\/\-\.]\d{4}$/;
                 return pattern.test(val);
             },
             phoneTR: function (val) {
@@ -338,8 +360,10 @@
 
             }
         };
-
+		
         //trigger pluging
         $.start();
+		return $firstValidate == 0 ? true : false;
+		
     };
 })(jQuery);
