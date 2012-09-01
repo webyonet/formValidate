@@ -2,16 +2,15 @@
  * nonFormValidate jQuery Plugin v1.1.0.0
  * Licensed under the MIT license.
  * Copyright 2012 G.Burak Demirezen
- */ 
-(function ($) {
+ */ (function ($) {
     $.fn.nonFormValidate = function (options) {
         var defaults = {
             form: false,
             error: true,
             multierrortext: true,
-			focusout: false,
-			keyup: true,
-			change: true,
+            focusout: false,
+            keyup: true,
+            change: true,
             errorText: {
                 required: 'Bu Alan Boş Geçilemez',
                 email: 'Hatalı Email Adresi',
@@ -27,10 +26,13 @@
                 equals: 'Şifreniz Birbiriyle Uyuşmuyor',
                 checkbox: 'Bu Alanı İşaretlemek Zorunludur',
                 radio: 'Bu Alanı işaretlemek Zorunludur radio',
-                list: 'Bir Seçim Yapmalısınız'
+                list: 'Bir Seçim Yapmalısınız',
+                multilist: 'En Az {count} Seçim Yapmalısınız'
             }
         }, settings = $.extend(defaults, options);
-		
+        /*
+			public variables
+		*/
         var $validate = "validate",
             $class = '.nValidate',
             $dom = this,
@@ -47,18 +49,22 @@
             $choseValidateGroup = false,
             $skip = 0,
             $choseValidateControl = true,
-			$scrollControll = false,
-        	$removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list';
-
+            $scrollControll = false,
+            $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list multilist';
+        /*
+			nValidate class search 
+		*/
         $.nonControl = function () {
             $firstValidate = 0;
-			$scrollControll = true;
+            $scrollControll = true;
             $($dom).find($errorClass).remove();
             $($dom).find($class).each(function () {
                 $.nonScan(this, this.className);
             });
         };
-
+        /*
+			validate scan function
+		*/
         $.nonScan = function ($this, $class, $out) {
             if (typeof $out != 'undefined') $focusOut = true;
             $skip = 0;
@@ -98,7 +104,9 @@
                 console.error('insert "v[required]" type of validation Elements');
             }
         };
-
+        /*
+			add to validate class
+		*/
         $.addValidateClass = function ($this, $text, $types) {
             $firstValidate++;
             $skip++;
@@ -127,7 +135,9 @@
             }
             $focusOut = false;
         };
-
+        /*
+			checkbox and radio group for last element search
+		*/
         $.choseLastError = function (dom) {
             var $thisDom = $.groupClear(dom),
                 $thisCounter = 0,
@@ -155,7 +165,9 @@
             });
             return $thisReturn;
         };
-
+        /*
+			checkbox group check
+		*/
         $.chooseControl = function (dom) {
             $choseGroup = $.groupClear(dom);
             $choseControl = false;
@@ -171,7 +183,9 @@
             });
             return $choseControl;
         };
-		
+        /*
+			start validation
+		*/
         $.start = function () {
             if (!settings.form) {
                 if ($dom != null) {
@@ -181,12 +195,16 @@
                 console.log('form true');
             }
         };
-		
+        /*
+			array syntax clear
+		*/
         $.groupClear = function (dom) {
             var pattern = /v\[.*\]/;
             return pattern.exec(dom.className).toString();
         };
-
+        /*
+			checkbox and radio clear class validate and remove error element
+		*/
         $.groupValidateClear = function (dom) {
             var $validateGroup = $.groupClear(dom);
             $($dom).find($class).each(function () {
@@ -199,52 +217,58 @@
                 }
             });
         };
-
+        /*
+			clear class validate
+		*/
         $.removeValidate = function (dom) {
             if ($skip == 0) $(dom).removeClass($removeClassName);
         };
-		
-		if(settings.change){
-		$($class).live('change', function () {
-			$scrollControll = false;
-            $dom = $(this).closest('.nonFormValidate');
-            if ($dom != null) {
-                if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio' || $(this).is('select')) {
-                    $firstValidate = 0;
-                    $choseValidateGroup = true;
-                    $.nonScan(this, this.className);
-                }
-            }
-            $choseValidateGroup = false;
-        });
-		}
-		if(settings.focusout){
-        $($class).live('focusout', function () {
-			$scrollControll = false;
-            $dom = $(this).closest('.nonFormValidate');
-            if ($dom != null) {
-                if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
-                    $firstValidate = 0;
-                    $.nonScan(this, this.className, true);
-                    if (!$(this).hasClass('validate')) $(this).next('span.error').remove();
-                }
-            }
-        });
-		}
-		if(settings.keyup){
-		$($class).live('keyup', function () {
-			$scrollControll = false;
-            $dom = $(this).closest('.nonFormValidate');
-            if ($dom != null) {
-                if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
-                    $firstValidate = 0;
-                    $.nonScan(this, this.className, true);
-                    if (!$(this).hasClass('validate')) $(this).next('span.error').remove();
-                }
-            }
-        });
-		}
 
+        if (settings.change) {
+            $($class).live('change', function () {
+                $scrollControll = false;
+                $dom = $(this).closest('.nonFormValidate');
+                if ($dom != null) {
+                    if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio' || $(this).is('select')) {
+                        $firstValidate = 0;
+                        $choseValidateGroup = true;
+                        $.nonScan(this, this.className);
+                    }
+                }
+                $choseValidateGroup = false;
+            });
+        };
+
+        if (settings.focusout) {
+            $($class).live('focusout', function () {
+                $scrollControll = false;
+                $dom = $(this).closest('.nonFormValidate');
+                if ($dom != null) {
+                    if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
+                        $firstValidate = 0;
+                        $.nonScan(this, this.className, true);
+                        if (!$(this).hasClass('validate')) $(this).next('span.error').remove();
+                    }
+                }
+            });
+        };
+
+        if (settings.keyup) {
+            $($class).live('keyup', function () {
+                $scrollControll = false;
+                $dom = $(this).closest('.nonFormValidate');
+                if ($dom != null) {
+                    if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
+                        $firstValidate = 0;
+                        $.nonScan(this, this.className, true);
+                        if (!$(this).hasClass('validate')) $(this).next('span.error').remove();
+                    }
+                }
+            });
+        };
+        /*
+			trigger validate
+		*/
         $.nonTrigger = function ($this, $class) {
             $minMaxText = '';
             switch ($class) {
@@ -303,13 +327,18 @@
                     $.groupValidateClear($this);
                 }
                 break;
-			case 'list':
-				$($this).next($errorClass).remove();
-				validations.list($this) == false ? $.addValidateClass($this, settings.errorText.list, $class) : $.removeValidate($this);
-			break;
+            case 'list':
+                $($this).next($errorClass).remove();
+                validations.list($this) == false ? $.addValidateClass($this, settings.errorText.list, $class) : $.removeValidate($this);
+                break;
+            case 'multilist':
+
+                break;
             }
         };
-
+        /*
+			validation control as object
+		*/
         var validations = {
             required: function (val) {
                 return val == '' ? false : true;
@@ -362,12 +391,15 @@
                 return $.chooseControl(dom);
             },
             list: function (dom) {
-				return $(dom).children('option:selected').val() == '' ? false : true;
+                return $(dom).children('option:selected').val() == '' ? false : true;
+            },
+            multilist: function (dom) {
+
             }
         };
-		
+
         //trigger pluging
         $.start();
-		return $firstValidate == 0 ? true : false;
+        return $firstValidate == 0 ? true : false;
     };
 })(jQuery);
