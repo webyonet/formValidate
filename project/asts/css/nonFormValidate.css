@@ -9,3 +9,9 @@
 	margin: 32px 0 0 5px;
 	position: absolute;
 }
+.error.checkbox{
+	  margin: 20px 0 0 5px;
+	}
+.error.radio{
+	margin: 20px 0 0 5px;
+	}

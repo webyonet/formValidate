@@ -11,14 +11,14 @@ h1{
 	padding-bottom:5px;
 	color:#666666;
 	}
-input{
+.textbox{
 	 border: 1px solid #999999;
     height: 24px;
     margin-bottom: 20px;
     width: 397px;
 	line-height:24px\9;/*ie 7-8 fix*/
 	}
-div{
+.firstDiv, .secondDiv{
 	background: none repeat scroll 0 0 #F1F1F1;
     border: 1px solid #666666;
     margin: 5px;
@@ -27,3 +27,10 @@ div{
 	position:relative;
 	float:left;
 }
+.firstDiv div, .secondDiv div{
+	padding-bottom:20px;
+	}
+.link{
+	display: inline-block;
+    margin-top: 10px;
+	}

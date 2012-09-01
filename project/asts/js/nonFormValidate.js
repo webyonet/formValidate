@@ -53,8 +53,8 @@
         $.nonControl = function () {
             $firstValidate = 0;
 			$scrollControll = true;
-            $($dom).children($errorClass).remove();
-            $($dom).children($class).each(function () {
+            $($dom).find($errorClass).remove();
+            $($dom).find($class).each(function () {
                 $.nonScan(this, this.className);
             });
         };
@@ -133,7 +133,7 @@
                 $thisCounter = 0,
                 $thisTemp = 0,
                 $thisReturn = '';
-            $($dom).children($class).each(function () {
+            $($dom).find($class).each(function () {
                 $type = $(this).attr('type');
                 if ($type == 'checkbox' || $type == 'radio') {
                     if ($choseGroup == $.groupClear(this)) {
@@ -142,7 +142,7 @@
                 }
             });
 
-            $($dom).children($class).each(function (i) {
+            $($dom).find($class).each(function (i) {
                 $type = $(this).attr('type');
                 if ($type == 'checkbox' || $type == 'radio') {
                     if ($choseGroup == $.groupClear(this)) {
@@ -159,7 +159,7 @@
         $.chooseControl = function (dom) {
             $choseGroup = $.groupClear(dom);
             $choseControl = false;
-            $($dom).children($class).each(function () {
+            $($dom).find($class).each(function () {
                 $type = $(this).attr('type');
                 if ($type == 'checkbox' || $type == 'radio') {
                     if ($choseGroup == $.groupClear(this)) {
@@ -189,7 +189,7 @@
 
         $.groupValidateClear = function (dom) {
             var $validateGroup = $.groupClear(dom);
-            $($dom).children($class).each(function () {
+            $($dom).find($class).each(function () {
                 $type = $(this).attr('type');
                 if ($type == 'checkbox' || $type == 'radio') {
                     if ($validateGroup == $.groupClear(this)) {

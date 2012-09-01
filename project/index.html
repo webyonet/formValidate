@@ -12,17 +12,19 @@ $(function(){
 	/*$('div.firstDiv').nonFormValidate({
 		form:false,
 	});*/
-	$('a.firstDivValidate').on('click',function(){
-		var test = $('div.firstDiv').nonFormValidate({
-						form:false
-				   });
+	$('a#firstDivValidate').on('click',function(){
+		var 
+		test = $('div.firstDiv').nonFormValidate({
+					form:false,
+				});
 		console.log (test);
 		return false;
 	});
-	$('a.secondDivValidate').on('click',function(){
-		$('div.secondDiv').nonFormValidate({
+	$('a#secondDivValidate').on('click',function(){
+		var test = $('div.secondDiv').nonFormValidate({
 			form:false
 		});
+		console.log (test);
 		return false;
 	});
 			
@@ -33,49 +35,67 @@ $(function(){
 <body>
 <div class="firstDiv nonFormValidate">
   <h1>First Div Validate</h1>
-  <input type="text" class="nValidate v[email]"/>
-  <input type="text" class="nValidate v[required]"/>
-  <input type="text" class="nValidate v[number]"/>
-  <input type="text" class="nValidate v[letter]"/>
-  <input type="text" class="nValidate v[letterornumber]"/>
-  <input type="text" class="nValidate v[url]"/>
-  <input type="text" class="nValidate v[decimal]"/>
-  <input type="text" class="nValidate v[dateTR]"/>
-  <input type="text" class="nValidate v[phoneTR]"/>
-  <input type="text" class="nValidate v[min[11]]"/>
-  <input type="text" class="nValidate v[max[5]]"/>
-  <a href="#" class="firstDivValidate">click to validate</a> </div>
+  <p>Email Validate</p>
+  <input type="text" class="textbox nValidate v[email]"/>
+  <p>Required Validate</p>
+  <input type="text" class="textbox nValidate v[required]"/>
+  <p>Number Validate</p>
+  <input type="text" class="textbox nValidate v[number]"/>
+  <p>Letter Validate</p>
+  <input type="text" class="textbox nValidate v[letter]"/>
+  <p>Letter and Number Validate</p>
+  <input type="text" class="textbox nValidate v[letterornumber]"/>
+  <p>Url Validate</p>
+  <input type="text" class="textbox nValidate v[url]"/>
+  <p>Decimal Validate</p>
+  <input type="text" class="textbox nValidate v[decimal]"/>
+  <p>TR Date Validate</p>
+  <input type="text" class="textbox nValidate v[dateTR]"/>
+  <p>TR Phone Validate</p>
+  <input type="text" class="textbox nValidate v[phoneTR]"/>
+  <p>Min Validate</p>
+  <input type="text" class="textbox nValidate v[min[11]]"/>
+  <p>Max Validate</p>
+  <input type="text" class="textbox nValidate v[max[5]]"/>
+  <p>Password Validate</p>
+  <input type="password" class="textbox nValidate v[required password[1]]"/>
+  <input type="password" class="textbox nValidate v[required equals[1]]"/>
+  <p>Second Password Validate</p>
+  <input type="password" class="textbox nValidate v[required password[2]]"/>
+  <input type="password" class="textbox nValidate v[required equals[2]]"/>
+  <p>Multi Validate (letter-min-max)</p>
+  <input type="text" class="textbox nValidate v[letter min[2] max[6]]"/>
+  <a href="#" id="firstDivValidate" class="link">click to validate</a>
+</div>
 <div class="secondDiv nonFormValidate">
   <h1>Second Div Validate</h1>
-  <!--  <input type="text" class="nValidate v[email]"/>
-  <input type="text" class="nValidate v[required]"/>
-  <input type="text" class="nValidate v[number]"/>
-  <input type="text" class="nValidate v[letter]"/>
-  <input type="text" class="nValidate v[letterornumber]"/>
-  <input type="text" class="nValidate v[url]"/>
-  <input type="text" class="nValidate v[decimal]"/>
-  <input type="text" class="nValidate v[dateTR]"/>
-  <input type="text" class="nValidate v[phoneTR]"/>--> 
-  <!--<input type="text" class="nValidate v[min[11]]"/>
-  <input type="text" class="nValidate v[max[5]]"/>
-  <input type="text" class="nValidate v[min[2]]"/>
--->
-<!--  <input type="text" class="nValidate v[letter min[2] max[6]]"/>
-  <input type="password" class="nValidate v[required min[6]]"/>
-  <input type="password" class="nValidate v[required password[1]]"/>
-  <input type="password" class="nValidate v[required equals[1]]"/>
-  <input type="password" class="nValidate v[required password[2]]"/>
-  <input type="password" class="nValidate v[required equals[2]]"/>-->
-  <input type="text" class="nValidate v[letter min[2] max[6]]"/>
-  <input type="checkbox" name="ch1" class="nValidate v[checkbox[1]]" value="1" />
-  <input type="checkbox" name="ch1" class="nValidate v[checkbox[1]]" value="2" />
+  <div>
+    <p>Checkbox Group 1 Validate</p>
+    <input type="checkbox" name="ch1" class="nValidate v[checkbox[1]]" value="1" />
+    <input type="checkbox" name="ch1" class="nValidate v[checkbox[1]]" value="2" />
+    <input type="checkbox" name="ch1" class="nValidate v[checkbox[1]]" value="3" />
+    <input type="checkbox" name="ch1" class="nValidate v[checkbox[1]]" value="4" />
+  </div>
+  <div>
+    <p>Checkbox Group 2 Validate</p>
+    <input type="checkbox" name="ch2" class="nValidate v[checkbox[255]] deneme" value="1" />
     <input type="checkbox" name="ch2" class="nValidate v[checkbox[255]] deneme" value="2" />
     <input type="checkbox" name="ch2" class="nValidate v[checkbox[255]] deneme" value="2" />
+    <input type="checkbox" name="ch2" class="nValidate v[checkbox[255]] deneme" value="2" />
+  </div>
+  <div>
+    <p>Radio Group 1 Validate</p>
+    <input type="radio" name="rd2" class="nValidate v[radio[3]]" value="1" />
     <input type="radio" name="rd2" class="nValidate v[radio[3]]" value="2" />
-    <input type="radio" name="rd2" class="nValidate v[radio[3]]" value="2" />
+  </div>
+  <div>
+    <p>Radio Group 2 Validate</p>
+    <input type="radio" name="rd3" class="nValidate v[radio[4]]" value="1" />
     <input type="radio" name="rd3" class="nValidate v[radio[4]]" value="2" />
-    <input type="radio" name="rd3" class="nValidate v[radio[4]]" value="2" />
-    <input type="radio" name="rd3" class="nValidate v[radio[4]]" value="2" />
-  <a href="#" class="secondDivValidate">click to validate</a> </div>
+    <input type="radio" name="rd3" class="nValidate v[radio[4]]" value="3" />
+    <input type="radio" name="rd3" class="nValidate v[radio[4]]" value="4" />
+  </div>
+  <a href="#" id="secondDivValidate" class="link">click to validate</a>
+</div>
 </body>
 </html>
