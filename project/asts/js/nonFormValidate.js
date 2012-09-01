@@ -364,6 +364,5 @@
         //trigger pluging
         $.start();
 		return $firstValidate == 0 ? true : false;
-		
     };
 })(jQuery);
