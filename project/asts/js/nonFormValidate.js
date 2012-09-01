@@ -48,7 +48,7 @@
             $skip = 0,
             $choseValidateControl = true,
 			$scrollControll = false,
-        	$removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email';
+        	$removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list';
 
         $.nonControl = function () {
             $firstValidate = 0;
@@ -203,12 +203,13 @@
         $.removeValidate = function (dom) {
             if ($skip == 0) $(dom).removeClass($removeClassName);
         };
+		
 		if(settings.change){
 		$($class).live('change', function () {
 			$scrollControll = false;
             $dom = $(this).closest('.nonFormValidate');
             if ($dom != null) {
-                if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio') {
+                if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio' || $(this).is('select')) {
                     $firstValidate = 0;
                     $choseValidateGroup = true;
                     $.nonScan(this, this.className);
@@ -302,6 +303,10 @@
                     $.groupValidateClear($this);
                 }
                 break;
+			case 'list':
+				$($this).next($errorClass).remove();
+				validations.list($this) == false ? $.addValidateClass($this, settings.errorText.list, $class) : $.removeValidate($this);
+			break;
             }
         };
 
@@ -357,7 +362,7 @@
                 return $.chooseControl(dom);
             },
             list: function (dom) {
-
+				return $(dom).children('option:selected').val() == '' ? false : true;
             }
         };
 		
