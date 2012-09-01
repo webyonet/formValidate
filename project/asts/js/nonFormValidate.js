@@ -48,6 +48,7 @@
             $choseGroup = '',
             $choseValidateGroup = false,
             $skip = 0,
+			$multilist = 0;
             $choseValidateControl = true,
             $scrollControll = false,
             $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list multilist';
@@ -77,12 +78,12 @@
                 if ($array.length > 0) {
                     $multi = $array[1].split(' ');
                     for (i in $multi) {
-                        $sizePattern = new RegExp('^[min\\[|max\\[|password\\[|equals\\[|checkbox\\[|radio\\[]+([0-9]+)\\]$', 'g');
+                        $sizePattern = new RegExp('^[min\\[|max\\[|password\\[|equals\\[|checkbox\\[|radio\\[|multilist\\[]+([0-9]+)\\]$', 'g');
                         $size = $sizePattern.exec($multi[i]);
                         if ($size != null) {
                             if ($size.length > 0) {
                                 $minmax = parseInt($size[1]);
-                                $multi[i] = $size[0].replace(/[^min|^max|^password|^equals|^checkbox|^radio]/g, '');
+                                $multi[i] = $size[0].replace(/[^min|^max|^password|^equals|^checkbox|^radio|^multilist]/g, '');
                             }
                         };
                         if ($multi[i] == 'checkbox' || $multi[i] == 'radio') {
@@ -232,7 +233,7 @@
                     if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio' || $(this).is('select')) {
                         $firstValidate = 0;
                         $choseValidateGroup = true;
-                        $.nonScan(this, this.className);
+                        $.nonScan(this, this.className, true);
                     }
                 }
                 $choseValidateGroup = false;
@@ -266,6 +267,16 @@
                 }
             });
         };
+		
+		$.multiListControl = function(dom){
+			$multilist = 0;
+			$(dom).children('option:selected').each(function(){
+				$multilist++;
+			});
+			return $multilist;
+		};
+		
+		
         /*
 			trigger validate
 		*/
@@ -332,7 +343,8 @@
                 validations.list($this) == false ? $.addValidateClass($this, settings.errorText.list, $class) : $.removeValidate($this);
                 break;
             case 'multilist':
-
+					 $minMaxText = settings.errorText.multilist.replace(/\{count\}/g, $minmax);
+					 validations.multilist($this) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             }
         };
@@ -394,7 +406,7 @@
                 return $(dom).children('option:selected').val() == '' ? false : true;
             },
             multilist: function (dom) {
-
+				return $.multiListControl(dom) < $minmax ? false : true;
             }
         };
 
