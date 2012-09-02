@@ -23,6 +23,7 @@
                 phoneTR: 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
                 min: 'En Az {count} Karakter Olmalıdır',
                 max: 'En Fazla {count} Karakter Olmalıdır',
+				password: 'Hatalı Şifre',
                 equals: 'Şifreniz Birbiriyle Uyuşmuyor',
                 checkbox: 'Bu Alanı İşaretlemek Zorunludur',
                 radio: 'Bu Alanı işaretlemek Zorunludur radio',
@@ -319,7 +320,8 @@
                 validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             case 'password':
-                $password = $this.value;
+				$password = $this.value;
+				validations.password($this.value) == false ? $.addValidateClass($this, settings.errorText.password, $class) : $.removeValidate($this);
                 break;
             case 'equals':
                 validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
@@ -392,6 +394,9 @@
             },
             max: function (val) {
                 return val.length > $minmax || val.length == 0 ? false : true;
+            },
+			password: function (val) {
+                return val == '' ? false : true;
             },
             equals: function (val) {
                 return val != $password ? false : true;
