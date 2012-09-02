@@ -1,5 +1,5 @@
 /*
- * nonFormValidate jQuery Plugin v1.4.5.1
+ * nonFormValidate jQuery Plugin v1.5.5.1
  * Licensed under the MIT license.
  * Copyright 2012 G.Burak Demirezen
  */ (function ($) {
@@ -9,7 +9,7 @@
             error: true,
             multierrortext: true,
             focusout: false,
-			scroll: true,
+            scroll: true,
             keyup: true,
             change: true,
             errorText: {
@@ -24,7 +24,7 @@
                 phoneTR: 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
                 min: 'En Az {count} Karakter Olmalıdır',
                 max: 'En Fazla {count} Karakter Olmalıdır',
-				password: 'Hatalı Şifre',
+                password: 'Hatalı Şifre',
                 equals: 'Şifreniz Birbiriyle Uyuşmuyor',
                 checkbox: 'En Az Bir Seçim Yapmalısınız',
                 radio: 'Bir Seçim Yapmalısınız',
@@ -50,7 +50,7 @@
             $choseGroup = '',
             $choseValidateGroup = false,
             $skip = 0,
-			$multilist = 0,
+            $multilist = 0,
             $choseValidateControl = true,
             $scrollControll = false,
             $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list multilist';
@@ -111,6 +111,11 @@
 			add to validate class
 		*/
         $.addValidateClass = function ($this, $text, $types) {
+            if ($.browser.msie) {
+                if ($($this).attr('type') == 'password') {
+                    if (typeof $.watermark === 'object') $($this).prev('span.error').remove();
+                }
+            }
             $firstValidate++;
             $skip++;
             $($this).addClass($validate);
@@ -131,13 +136,13 @@
 
                 }
             }
-			if(settings.scroll){
-				if ($firstValidate == 1 && $scrollControll == true) {
-					$('html,body').animate({
-						scrollTop: $($this).offset().top - 20
-					}, 1000);
-				}
-			}
+            if (settings.scroll) {
+                if ($firstValidate == 1 && $scrollControll == true) {
+                    $('html,body').animate({
+                        scrollTop: $($this).offset().top - 20
+                    }, 1000);
+                }
+            }
             $focusOut = false;
         };
         /*
@@ -187,17 +192,17 @@
                 }
             });
             return $choseControl;
-        };		
-		/*
+        };
+        /*
 			control to multible seclect option
 		*/
-		$.multiListControl = function(dom){
-			$multilist = 0;
-			$(dom).children('option:selected').each(function(){
-				$multilist++;
-			});
-			return $multilist;
-		};
+        $.multiListControl = function (dom) {
+            $multilist = 0;
+            $(dom).children('option:selected').each(function () {
+                $multilist++;
+            });
+            return $multilist;
+        };
         /*
 			start validation
 		*/
@@ -238,13 +243,13 @@
         $.removeValidate = function (dom) {
             if ($skip == 0) $(dom).removeClass($removeClassName);
         };
-		
-		$.clearValidate = function(){
-			if($('.validate').length > 0){
-				$('span.error').remove();
-				$('.validate').removeClass('validate');
-			}
-		};
+
+        $.clearValidate = function () {
+            if ($('.validate').length > 0) {
+                $('span.error').remove();
+                $('.validate').removeClass('validate');
+            }
+        };
 
         if (settings.change) {
             $($class).live('change', function () {
@@ -330,8 +335,8 @@
                 validations.max($($this).val()) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             case 'password':
-				$password = $($this).val();
-				validations.password($($this).val()) == false ? $.addValidateClass($this, settings.errorText.password, $class) : $.removeValidate($this);
+                $password = $($this).val();
+                validations.password($($this).val()) == false ? $.addValidateClass($this, settings.errorText.password, $class) : $.removeValidate($this);
                 break;
             case 'equals':
                 validations.equals($($this).val()) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
@@ -355,8 +360,8 @@
                 validations.list($this) == false ? $.addValidateClass($this, settings.errorText.list, $class) : $.removeValidate($this);
                 break;
             case 'multilist':
-					 $minMaxText = settings.errorText.multilist.replace(/\{count\}/g, $minmax);
-					 validations.multilist($this) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
+                $minMaxText = settings.errorText.multilist.replace(/\{count\}/g, $minmax);
+                validations.multilist($this) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             }
         };
@@ -405,7 +410,7 @@
             max: function (val) {
                 return val.length > $minmax || val.length == 0 ? false : true;
             },
-			password: function (val) {
+            password: function (val) {
                 return val == '' ? false : true;
             },
             equals: function (val) {
@@ -421,12 +426,12 @@
                 return $(dom).children('option:selected').val() == '' ? false : true;
             },
             multilist: function (dom) {
-				return $.multiListControl(dom) < $minmax ? false : true;
+                return $.multiListControl(dom) < $minmax ? false : true;
             }
         };
-		
+
         //trigger pluging
         $.start();
         return $firstValidate == 0 ? true : false;
-    };	
+    };
 })(jQuery);
