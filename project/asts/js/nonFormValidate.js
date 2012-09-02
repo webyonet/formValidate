@@ -200,7 +200,7 @@
 		*/
         $.start = function () {
             if (!settings.form) {
-                if ($dom != null) {
+                if ($dom != null && $dom.length != 0) {
                     $.nonControl();
                 }
             } else {
@@ -414,9 +414,9 @@
 				return $.multiListControl(dom) < $minmax ? false : true;
             }
         };
-
+		
         //trigger pluging
         $.start();
         return $firstValidate == 0 ? true : false;
-    };
+    };	
 })(jQuery);
