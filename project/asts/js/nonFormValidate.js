@@ -48,7 +48,7 @@
             $choseGroup = '',
             $choseValidateGroup = false,
             $skip = 0,
-			$multilist = 0;
+			$multilist = 0,
             $choseValidateControl = true,
             $scrollControll = false,
             $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list multilist';
@@ -183,7 +183,17 @@
                 }
             });
             return $choseControl;
-        };
+        };		
+		/*
+			control to multible seclect option
+		*/
+		$.multiListControl = function(dom){
+			$multilist = 0;
+			$(dom).children('option:selected').each(function(){
+				$multilist++;
+			});
+			return $multilist;
+		};
         /*
 			start validation
 		*/
@@ -267,16 +277,6 @@
                 }
             });
         };
-		
-		$.multiListControl = function(dom){
-			$multilist = 0;
-			$(dom).children('option:selected').each(function(){
-				$multilist++;
-			});
-			return $multilist;
-		};
-		
-		
         /*
 			trigger validate
 		*/
