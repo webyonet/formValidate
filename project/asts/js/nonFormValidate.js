@@ -25,8 +25,8 @@
                 max: 'En Fazla {count} Karakter Olmalıdır',
 				password: 'Hatalı Şifre',
                 equals: 'Şifreniz Birbiriyle Uyuşmuyor',
-                checkbox: 'Bu Alanı İşaretlemek Zorunludur',
-                radio: 'Bu Alanı işaretlemek Zorunludur radio',
+                checkbox: 'En Az Bir Seçim Yapmalısınız',
+                radio: 'Bir Seçim Yapmalısınız',
                 list: 'Bir Seçim Yapmalısınız',
                 multilist: 'En Az {count} Seçim Yapmalısınız'
             }
@@ -235,6 +235,13 @@
         $.removeValidate = function (dom) {
             if ($skip == 0) $(dom).removeClass($removeClassName);
         };
+		
+		$.clearValidate = function(){
+			if($('.validate').length > 0){
+				$('span.error').remove();
+				$('.validate').removeClass('validate');
+			}
+		};
 
         if (settings.change) {
             $($class).live('change', function () {
