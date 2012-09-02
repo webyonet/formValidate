@@ -292,46 +292,46 @@
             $minMaxText = '';
             switch ($class) {
             case 'email':
-                validations.email($this.value) == false ? $.addValidateClass($this, settings.errorText.email, $class) : $.removeValidate($this);
+                validations.email($($this).val()) == false ? $.addValidateClass($this, settings.errorText.email, $class) : $.removeValidate($this);
                 break;
             case 'required':
-                validations.required($this.value) == false ? $.addValidateClass($this, settings.errorText.required, $class) : $.removeValidate($this);
+                validations.required($($this).val()) == false ? $.addValidateClass($this, settings.errorText.required, $class) : $.removeValidate($this);
                 break;
             case 'number':
-                validations.number($this.value) == false ? $.addValidateClass($this, settings.errorText.number, $class) : $.removeValidate($this);
+                validations.number($($this).val()) == false ? $.addValidateClass($this, settings.errorText.number, $class) : $.removeValidate($this);
                 break;
             case 'letter':
-                validations.letter($this.value) == false ? $.addValidateClass($this, settings.errorText.letter, $class) : $.removeValidate($this);
+                validations.letter($($this).val()) == false ? $.addValidateClass($this, settings.errorText.letter, $class) : $.removeValidate($this);
                 break;
             case 'letterornumber':
-                validations.letterornumber($this.value) == false ? $.addValidateClass($this, settings.errorText.letterornumber, $class) : $.removeValidate($this);
+                validations.letterornumber($($this).val()) == false ? $.addValidateClass($this, settings.errorText.letterornumber, $class) : $.removeValidate($this);
                 break;
             case 'decimal':
-                validations.decimal($this.value) == false || $this.value == '' ? $.addValidateClass($this, settings.errorText.decimal, $class) : $.removeValidate($this);
+                validations.decimal($($this).val()) == false || $($this).val() == '' ? $.addValidateClass($this, settings.errorText.decimal, $class) : $.removeValidate($this);
                 break;
             case 'url':
-                validations.url($this.value) == false ? $.addValidateClass($this, settings.errorText.url, $class) : $.removeValidate($this);
+                validations.url($($this).val()) == false ? $.addValidateClass($this, settings.errorText.url, $class) : $.removeValidate($this);
                 break;
             case 'dateTR':
-                validations.dateTR($this.value) == false ? $.addValidateClass($this, settings.errorText.dateTR, $class) : $.removeValidate($this);
+                validations.dateTR($($this).val()) == false ? $.addValidateClass($this, settings.errorText.dateTR, $class) : $.removeValidate($this);
                 break;
             case 'phoneTR':
-                validations.phoneTR($this.value) == false ? $.addValidateClass($this, settings.errorText.phoneTR, $class) : $.removeValidate($this);
+                validations.phoneTR($($this).val()) == false ? $.addValidateClass($this, settings.errorText.phoneTR, $class) : $.removeValidate($this);
                 break;
             case 'min':
                 $minMaxText = settings.errorText.min.replace(/\{count\}/g, $minmax);
-                validations.min($this.value) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
+                validations.min($($this).val()) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             case 'max':
                 $minMaxText = settings.errorText.max.replace(/\{count\}/g, $minmax);
-                validations.max($this.value) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
+                validations.max($($this).val()) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             case 'password':
-				$password = $this.value;
-				validations.password($this.value) == false ? $.addValidateClass($this, settings.errorText.password, $class) : $.removeValidate($this);
+				$password = $($this).val();
+				validations.password($($this).val()) == false ? $.addValidateClass($this, settings.errorText.password, $class) : $.removeValidate($this);
                 break;
             case 'equals':
-                validations.equals($this.value) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
+                validations.equals($($this).val()) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
                 break;
             case 'checkbox':
                 if (validations.checkbox($this) == false) {
