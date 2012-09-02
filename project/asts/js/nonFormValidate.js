@@ -9,6 +9,7 @@
             error: true,
             multierrortext: true,
             focusout: false,
+			scroll: true,
             keyup: true,
             change: true,
             errorText: {
@@ -130,11 +131,13 @@
 
                 }
             }
-            if ($firstValidate == 1 && $scrollControll == true) {
-                $('html,body').animate({
-                    scrollTop: $($this).offset().top - 20
-                }, 1000);
-            }
+			if(settings.scroll){
+				if ($firstValidate == 1 && $scrollControll == true) {
+					$('html,body').animate({
+						scrollTop: $($this).offset().top - 20
+					}, 1000);
+				}
+			}
             $focusOut = false;
         };
         /*
