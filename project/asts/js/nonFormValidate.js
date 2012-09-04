@@ -29,7 +29,8 @@
                 checkbox: 'En Az Bir Seçim Yapmalısınız',
                 radio: 'Bir Seçim Yapmalısınız',
                 list: 'Bir Seçim Yapmalısınız',
-                multilist: 'En Az {count} Seçim Yapmalısınız'
+                multilist: 'En Az {count} Seçim Yapmalısınız',
+				agree:'Sözleşmeyi Kabul Etmelisin'
             }
         }, settings = $.extend(defaults, options);
         /*
@@ -80,6 +81,7 @@
                 if ($array.length > 0) {
                     $multi = $array[1].split(' ');
                     for (i in $multi) {
+						console.log($multi)
                         $sizePattern = new RegExp('^[min\\[|max\\[|password\\[|equals\\[|checkbox\\[|radio\\[|multilist\\[]+([0-9]+)\\]$', 'g');
                         $size = $sizePattern.exec($multi[i]);
                         if ($size != null) {
@@ -130,7 +132,7 @@
                 } else {
                     if ($choseValidateControl) {
                         var $lastChose = $.choseLastError($this);
-                        $($lastChose).after('<span class="error ' + $types + '">' + $text + '</span>');
+                        $($lastChose).after('<span class="error ' + $types + ' group'+ $minmax +'">' + $text + '</span>');
                         $choseValidateControl = false;
                     }
 
@@ -250,9 +252,11 @@
                 $('.validate').removeClass('validate');
             }
         };
-
+		//$($class).die('keyup');
+		
         if (settings.change) {
-            $($class).live('change', function () {
+			$(document).off('change',$class);
+            $(document).on('change',$class, function () {
                 $scrollControll = false;
                 $dom = $(this).closest('.nonFormValidate');
                 if ($dom != null) {
@@ -267,7 +271,8 @@
         };
 
         if (settings.focusout) {
-            $($class).live('focusout', function () {
+			$(document).off('focusout',$class);
+            $(document).on('focusout', $class, function () {
                 $scrollControll = false;
                 $dom = $(this).closest('.nonFormValidate');
                 if ($dom != null) {
@@ -281,7 +286,8 @@
         };
 
         if (settings.keyup) {
-            $($class).live('keyup', function () {
+			$(document).off('keyup',$class);
+            $(document).on('keyup', $class, function () {
                 $scrollControll = false;
                 $dom = $(this).closest('.nonFormValidate');
                 if ($dom != null) {
@@ -363,6 +369,10 @@
                 $minMaxText = settings.errorText.multilist.replace(/\{count\}/g, $minmax);
                 validations.multilist($this) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
+			case 'agree':
+			 	$($this).next($errorClass).remove();
+                validations.agree($this) == false ? $.addValidateClass($this, settings.errorText.agree, $class) : $.removeValidate($this);
+                break;
             }
         };
         /*
@@ -427,6 +437,9 @@
             },
             multilist: function (dom) {
                 return $.multiListControl(dom) < $minmax ? false : true;
+            },
+			agree: function (dom) {
+                return $(dom).is(':checked') == false ? false : true;
             }
         };
 
