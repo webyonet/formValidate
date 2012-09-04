@@ -1,8 +1,9 @@
 /*
- * nonFormValidate jQuery Plugin v1.5.5.1
+ * nonFormValidate jQuery Plugin v1.7.5.1
  * Licensed under the MIT license.
  * Copyright 2012 G.Burak Demirezen
- */ (function ($) {
+ */ 
+(function ($) {
     $.fn.nonFormValidate = function (options) {
         var defaults = {
             form: false,
@@ -11,27 +12,33 @@
             focusout: false,
             scroll: true,
             keyup: true,
-            change: true,
-            errorText: {
-                required: 'Bu Alan Boş Geçilemez',
-                email: 'Hatalı Email Adresi',
-                number: 'Bu Alana Yanlızca Sayı Girilebilir',
-                letter: 'Bu Alana Yanlızca Metin Girilebilir',
-                letterornumber: 'Bu Alana Yanlızca Metin ve Sayı Girilebilir',
-                decimal: 'Bu Alana Yanlızca Sayı veya Rasyonel Sayı Girilebilir',
-                url: 'Bu Alana Yanlızca Url Girilebilir',
-                dateTR: 'Bu Alana Yanlızca Tarih Girilebilir "GG/AA/YYYY , GG-AA-YYYY"',
-                phoneTR: 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
-                min: 'En Az {count} Karakter Olmalıdır',
-                max: 'En Fazla {count} Karakter Olmalıdır',
-                password: 'Hatalı Şifre',
-                equals: 'Şifreniz Birbiriyle Uyuşmuyor',
-                checkbox: 'En Az Bir Seçim Yapmalısınız',
-                radio: 'Bir Seçim Yapmalısınız',
-                list: 'Bir Seçim Yapmalısınız',
-                multilist: 'En Az {count} Seçim Yapmalısınız'
-            }
+            change: true
+        }, messages,
+        errorText = {
+            required: 'Bu Alan Boş Geçilemez',
+            email: 'Hatalı Email Adresi',
+            number: 'Bu Alana Yanlızca Sayı Girilebilir',
+            letter: 'Bu Alana Yanlızca Metin Girilebilir',
+            letterornumber: 'Bu Alana Yanlızca Metin ve Sayı Girilebilir',
+            decimal: 'Bu Alana Yanlızca Sayı veya Rasyonel Sayı Girilebilir',
+            url: 'Bu Alana Yanlızca Url Girilebilir',
+            dateTR: 'Bu Alana Yanlızca Tarih Girilebilir "GG/AA/YYYY , GG-AA-YYYY"',
+            phoneTR: 'Bu Alana Yanlızca Telefon Girilebilir "0(530) 000 00 00, 0(530) 000-00-00"',
+            min: 'En Az {count} Karakter Olmalıdır',
+            max: 'En Fazla {count} Karakter Olmalıdır',
+            password: 'Hatalı Şifre',
+            equals: 'Şifreniz Birbiriyle Uyuşmuyor',
+            checkbox: 'En Az Bir Seçim Yapmalısınız',
+            radio: 'Bir Seçim Yapmalısınız',
+            list: 'Bir Seçim Yapmalısınız',
+            multilist: 'En Az {count} Seçim Yapmalısınız',
+            agree: 'Sözleşmeyi Kabul Etmelisin'
         }, settings = $.extend(defaults, options);
+
+        if (typeof options != 'undefined') {
+            messages = $.extend(errorText, options.messages);
+        };
+
         /*
 			public variables
 		*/
@@ -52,8 +59,8 @@
             $skip = 0,
             $multilist = 0,
             $choseValidateControl = true,
-            $scrollControll = false,
-            $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list multilist';
+            $scrollControll = false;
+
         /*
 			nValidate class search 
 		*/
@@ -130,7 +137,7 @@
                 } else {
                     if ($choseValidateControl) {
                         var $lastChose = $.choseLastError($this);
-                        $($lastChose).after('<span class="error ' + $types + '">' + $text + '</span>');
+                        $($lastChose).after('<span class="error ' + $types + ' group' + $minmax + '">' + $text + '</span>');
                         $choseValidateControl = false;
                     }
 
@@ -231,7 +238,7 @@
                 $type = $(this).attr('type');
                 if ($type == 'checkbox' || $type == 'radio') {
                     if ($validateGroup == $.groupClear(this)) {
-                        $(this).removeClass($removeClassName);
+                        $(this).removeClass($validate);
                         $(this).next('span.error').remove();
                     }
                 }
@@ -241,7 +248,7 @@
 			clear class validate
 		*/
         $.removeValidate = function (dom) {
-            if ($skip == 0) $(dom).removeClass($removeClassName);
+            if ($skip == 0) $(dom).removeClass($validate);
         };
 
         $.clearValidate = function () {
@@ -250,9 +257,11 @@
                 $('.validate').removeClass('validate');
             }
         };
+        //$($class).die('keyup');
 
         if (settings.change) {
-            $($class).live('change', function () {
+            $(document).off('change', $class);
+            $(document).on('change', $class, function () {
                 $scrollControll = false;
                 $dom = $(this).closest('.nonFormValidate');
                 if ($dom != null) {
@@ -267,7 +276,8 @@
         };
 
         if (settings.focusout) {
-            $($class).live('focusout', function () {
+            $(document).off('focusout', $class);
+            $(document).on('focusout', $class, function () {
                 $scrollControll = false;
                 $dom = $(this).closest('.nonFormValidate');
                 if ($dom != null) {
@@ -281,7 +291,8 @@
         };
 
         if (settings.keyup) {
-            $($class).live('keyup', function () {
+            $(document).off('keyup', $class);
+            $(document).on('keyup', $class, function () {
                 $scrollControll = false;
                 $dom = $(this).closest('.nonFormValidate');
                 if ($dom != null) {
@@ -300,68 +311,72 @@
             $minMaxText = '';
             switch ($class) {
             case 'email':
-                validations.email($($this).val()) == false ? $.addValidateClass($this, settings.errorText.email, $class) : $.removeValidate($this);
+                validations.email($($this).val()) == false ? $.addValidateClass($this, errorText.email, $class) : $.removeValidate($this);
                 break;
             case 'required':
-                validations.required($($this).val()) == false ? $.addValidateClass($this, settings.errorText.required, $class) : $.removeValidate($this);
+                validations.required($($this).val()) == false ? $.addValidateClass($this, errorText.required, $class) : $.removeValidate($this);
                 break;
             case 'number':
-                validations.number($($this).val()) == false ? $.addValidateClass($this, settings.errorText.number, $class) : $.removeValidate($this);
+                validations.number($($this).val()) == false ? $.addValidateClass($this, errorText.number, $class) : $.removeValidate($this);
                 break;
             case 'letter':
-                validations.letter($($this).val()) == false ? $.addValidateClass($this, settings.errorText.letter, $class) : $.removeValidate($this);
+                validations.letter($($this).val()) == false ? $.addValidateClass($this, errorText.letter, $class) : $.removeValidate($this);
                 break;
             case 'letterornumber':
-                validations.letterornumber($($this).val()) == false ? $.addValidateClass($this, settings.errorText.letterornumber, $class) : $.removeValidate($this);
+                validations.letterornumber($($this).val()) == false ? $.addValidateClass($this, errorText.letterornumber, $class) : $.removeValidate($this);
                 break;
             case 'decimal':
-                validations.decimal($($this).val()) == false || $($this).val() == '' ? $.addValidateClass($this, settings.errorText.decimal, $class) : $.removeValidate($this);
+                validations.decimal($($this).val()) == false || $($this).val() == '' ? $.addValidateClass($this, errorText.decimal, $class) : $.removeValidate($this);
                 break;
             case 'url':
-                validations.url($($this).val()) == false ? $.addValidateClass($this, settings.errorText.url, $class) : $.removeValidate($this);
+                validations.url($($this).val()) == false ? $.addValidateClass($this, errorText.url, $class) : $.removeValidate($this);
                 break;
             case 'dateTR':
-                validations.dateTR($($this).val()) == false ? $.addValidateClass($this, settings.errorText.dateTR, $class) : $.removeValidate($this);
+                validations.dateTR($($this).val()) == false ? $.addValidateClass($this, errorText.dateTR, $class) : $.removeValidate($this);
                 break;
             case 'phoneTR':
-                validations.phoneTR($($this).val()) == false ? $.addValidateClass($this, settings.errorText.phoneTR, $class) : $.removeValidate($this);
+                validations.phoneTR($($this).val()) == false ? $.addValidateClass($this, errorText.phoneTR, $class) : $.removeValidate($this);
                 break;
             case 'min':
-                $minMaxText = settings.errorText.min.replace(/\{count\}/g, $minmax);
+                $minMaxText = errorText.min.replace(/\{count\}/g, $minmax);
                 validations.min($($this).val()) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             case 'max':
-                $minMaxText = settings.errorText.max.replace(/\{count\}/g, $minmax);
+                $minMaxText = errorText.max.replace(/\{count\}/g, $minmax);
                 validations.max($($this).val()) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
                 break;
             case 'password':
                 $password = $($this).val();
-                validations.password($($this).val()) == false ? $.addValidateClass($this, settings.errorText.password, $class) : $.removeValidate($this);
+                validations.password($($this).val()) == false ? $.addValidateClass($this, errorText.password, $class) : $.removeValidate($this);
                 break;
             case 'equals':
-                validations.equals($($this).val()) == false ? $.addValidateClass($this, settings.errorText.equals, $class) : $.removeValidate($this);
+                validations.equals($($this).val()) == false ? $.addValidateClass($this, errorText.equals, $class) : $.removeValidate($this);
                 break;
             case 'checkbox':
                 if (validations.checkbox($this) == false) {
-                    $.addValidateClass($this, settings.errorText.checkbox, $class);
+                    $.addValidateClass($this, errorText.checkbox, $class);
                 } else {
                     $.groupValidateClear($this);
                 }
                 break;
             case 'radio':
                 if (validations.radio($this) == false) {
-                    $.addValidateClass($this, settings.errorText.radio, $class);
+                    $.addValidateClass($this, errorText.radio, $class);
                 } else {
                     $.groupValidateClear($this);
                 }
                 break;
             case 'list':
                 $($this).next($errorClass).remove();
-                validations.list($this) == false ? $.addValidateClass($this, settings.errorText.list, $class) : $.removeValidate($this);
+                validations.list($this) == false ? $.addValidateClass($this, errorText.list, $class) : $.removeValidate($this);
                 break;
             case 'multilist':
-                $minMaxText = settings.errorText.multilist.replace(/\{count\}/g, $minmax);
+                $minMaxText = errorText.multilist.replace(/\{count\}/g, $minmax);
                 validations.multilist($this) == false ? $.addValidateClass($this, $minMaxText, $class) : $.removeValidate($this);
+                break;
+            case 'agree':
+                $($this).next($errorClass).remove();
+                validations.agree($this) == false ? $.addValidateClass($this, errorText.agree, $class) : $.removeValidate($this);
                 break;
             }
         };
@@ -427,6 +442,9 @@
             },
             multilist: function (dom) {
                 return $.multiListControl(dom) < $minmax ? false : true;
+            },
+            agree: function (dom) {
+                return $(dom).is(':checked') == false ? false : true;
             }
         };
 
