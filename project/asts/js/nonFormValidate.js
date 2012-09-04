@@ -32,7 +32,11 @@
                 multilist: 'En Az {count} Seçim Yapmalısınız',
 				agree:'Sözleşmeyi Kabul Etmelisin'
             }
-        }, settings = $.extend(defaults, options);
+        },messages, settings = $.extend(defaults, options);
+		
+		if(typeof options != 'undefined'){
+		 messages = $.extend(settings.errorText,options.messages);
+		};
         /*
 			public variables
 		*/
@@ -53,9 +57,10 @@
             $skip = 0,
             $multilist = 0,
             $choseValidateControl = true,
-            $scrollControll = false,
-            $removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list multilist';
-        /*
+            $scrollControll = false;
+            //$removeClassName = 'validate radio checkbox equals password max min phoneTR dateTR url decimal letterornumber letter number required email list multilist';
+       
+	    /*
 			nValidate class search 
 		*/
         $.nonControl = function () {
@@ -81,7 +86,6 @@
                 if ($array.length > 0) {
                     $multi = $array[1].split(' ');
                     for (i in $multi) {
-						console.log($multi)
                         $sizePattern = new RegExp('^[min\\[|max\\[|password\\[|equals\\[|checkbox\\[|radio\\[|multilist\\[]+([0-9]+)\\]$', 'g');
                         $size = $sizePattern.exec($multi[i]);
                         if ($size != null) {
@@ -233,7 +237,7 @@
                 $type = $(this).attr('type');
                 if ($type == 'checkbox' || $type == 'radio') {
                     if ($validateGroup == $.groupClear(this)) {
-                        $(this).removeClass($removeClassName);
+                        $(this).removeClass($validate);
                         $(this).next('span.error').remove();
                     }
                 }
@@ -243,7 +247,7 @@
 			clear class validate
 		*/
         $.removeValidate = function (dom) {
-            if ($skip == 0) $(dom).removeClass($removeClassName);
+            if ($skip == 0) $(dom).removeClass($validate);
         };
 
         $.clearValidate = function () {
