@@ -9,10 +9,11 @@
             form: false,
             error: true,
             multierrortext: true,
-            focusout: false,
             scroll: true,
+			focusout: false,
             keyup: true,
-            change: true
+            change: true,
+			textchange: false
         }, messages,
         errorText = {
             required: 'Bu Alan Boş Geçilemez',
@@ -292,7 +293,7 @@
 
         if (settings.keyup) {
             $(document).off('keyup', $class);
-            $(document).on('keyup', $class, function () {
+            $(document).on('keyup', $class,function () {
                 $scrollControll = false;
                 $dom = $(this).closest('.nonFormValidate');
                 if ($dom != null) {
@@ -304,6 +305,22 @@
                 }
             });
         };
+		
+		 if (settings.textchange) {
+            $($class+':text').off('change');
+            $($class+':text').on('change', function () {
+                $scrollControll = false;
+                $dom = $(this).closest('.nonFormValidate');
+                if ($dom != null) {
+                    if ($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'radio') {
+                        $firstValidate = 0;
+                        $.nonScan(this, this.className, true);
+                        if (!$(this).hasClass('validate')) $(this).next('span.error').remove();
+                    }
+                }
+            });
+        };
+		
         /*
 			trigger validate
 		*/
